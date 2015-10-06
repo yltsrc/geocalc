@@ -1,6 +1,9 @@
 Geocalc
 =======
 
+[![Build Status](https://travis-ci.org/yltsrc/geocalc.svg?branch=master)](https://travis-ci.org/yltsrc/geocalc)
+
+
 Calculate distance, bearing and more between Latitude/Longitude points
 
 All the formulas are adapted from
