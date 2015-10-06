@@ -39,8 +39,6 @@ defmodule Geocalc do
       15.113303075326261
       iex> Geocalc.bearing(paris, berlin)
       82.85424470451336
-      iex> Geocalc.bearing(paris, london)
-      -110.99076100695387
   """
   def bearing([point_1_lat, point_1_lng], [point_2_lat, point_2_lng]) do
     y = :math.sin(point_2_lng - point_1_lng) * :math.cos(point_2_lat)
