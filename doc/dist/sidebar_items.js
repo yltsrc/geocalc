@@ -1,1 +1,0 @@
-sidebarNodes={"exceptions":[],"extras":[{"id":"extra-api-reference","title":"API Reference","headers":[]}],"modules":[{"id":"Geocalc","title":"Geocalc","functions":[{"id":"distance_between/2","anchor":"distance_between/2"},{"id":"radian/1","anchor":"radian/1"}]}],"protocols":[]}

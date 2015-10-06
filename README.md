@@ -10,4 +10,12 @@ All the formulas are adapted from
 Calculate distance between 2 points
 ===================================
 
-    Geocalc.distance_between([50.0663889, -5.7147222], [58.6438889, -3.07]) # => 968853.5464535094
+    Geocalc.distance_between([50.0663889, -5.7147222], [58.6438889, -3.07])
+    # => 968853.5464535094
+    
+
+Calculate bearing between 2 points
+===================================
+
+    Geocalc.bearing([50.0663889, -5.7147222], [58.6438889, -3.07])
+    # => -14.311818832158915
