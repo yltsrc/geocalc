@@ -1,0 +1,2 @@
+defmodule Geocalc do
+end
