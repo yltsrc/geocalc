@@ -3,10 +3,12 @@ defmodule Geocalc.Mixfile do
 
   def project do
     [app: :geocalc,
+     name: "Geocalc",
      version: "0.0.2",
      elixir: "~> 1.0",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     source_url: "https://github.com/yltsrc/geocalc",
      description: description,
      package: package,
      deps: deps]
@@ -29,7 +31,9 @@ defmodule Geocalc.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    []
+    [
+      { :ex_doc, github: "elixir-lang/ex_doc" }
+    ]
   end
 
   defp description do
@@ -43,6 +47,6 @@ defmodule Geocalc.Mixfile do
      maintainers: ["Yura Tolstik"],
      licenses: ["MIT"],
      links: %{"GitHub" => "https://github.com/yltsrc/geocalc",
-              "Docs" => "http://hexdocs.pm/geocalc"}]
+              "Docs" => "http://hexdocs.pm/geocalc/"}]
   end
 end
