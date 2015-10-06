@@ -14,6 +14,8 @@ defmodule Geocalc do
       iex> paris = [48.8588589, 2.3475569]
       iex> Geocalc.distance_between(berlin, paris)
       878327.4291149472
+      iex> Geocalc.distance_between(paris, berlin)
+      878327.4291149472
   """
   def distance_between([point_1_lat, point_1_lng], [point_2_lat, point_2_lng]) do
     point_1_lat_rad = radian(point_1_lat)
@@ -25,7 +27,32 @@ defmodule Geocalc do
     @earth_radius * c
   end
 
-  def radian(lat_or_lng) do
+  @doc """
+  Calculates bearing.
+  Return degrees from the range -180°..180°.
+
+  ## Example
+      iex> berlin = [52.5075419, 13.4251364]
+      iex> paris = [48.8588589, 2.3475569]
+      iex> london = [51.5286416, -0.1015987]
+      iex> Geocalc.bearing(berlin, paris)
+      15.113303075326261
+      iex> Geocalc.bearing(paris, berlin)
+      82.85424470451336
+      iex> Geocalc.bearing(paris, london)
+      -110.99076100695387
+  """
+  def bearing([point_1_lat, point_1_lng], [point_2_lat, point_2_lng]) do
+    y = :math.sin(point_2_lng - point_1_lng) * :math.cos(point_2_lat)
+    x = :math.cos(point_1_lat) * :math.sin(point_2_lat) - :math.sin(point_1_lat) * :math.cos(point_2_lat) * :math.cos(point_2_lng - point_1_lng)
+    degrees(:math.atan2(y, x))
+  end
+
+  defp radian(lat_or_lng) do
     lat_or_lng * :math.pi / 180
+  end
+
+  defp degrees(radians) do
+    radians * 180 / :math.pi
   end
 end

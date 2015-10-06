@@ -12,4 +12,16 @@ defmodule GeocalcTest do
     london = [51.5286416, -0.1015987]
     assert_in_delta Geocalc.distance_between(minsk, london), 1_872_028.5, 0.05
   end
+
+  test "calculates bearing between two points" do
+    point_1 = [50.0663889, -5.7147222]
+    point_2 = [58.6438889, -3.07]
+    assert_in_delta Geocalc.bearing(point_1, point_2), -14.3115, 0.0005
+  end
+
+  test "calculates bearing between Minsk and London" do
+    minsk = [53.8838884, 27.5949741]
+    london = [51.5286416, -0.1015987]
+    assert_in_delta Geocalc.bearing(minsk, london), -170.257, 0.0005
+  end
 end
