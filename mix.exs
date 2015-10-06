@@ -7,6 +7,8 @@ defmodule Geocalc.Mixfile do
      elixir: "~> 1.0",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     description: description,
+     package: package,
      deps: deps]
   end
 
@@ -28,5 +30,19 @@ defmodule Geocalc.Mixfile do
   # Type `mix help deps` for more examples and options
   defp deps do
     []
+  end
+
+  defp description do
+    """
+    Calculate distance, bearing and more between latitude/longitude points.
+    """
+  end
+
+  defp package do
+    [files: ["lib", "priv", "mix.exs", "README*", "LICENSE*"],
+     maintainers: ["Yura Tolstik"],
+     licenses: ["MIT"],
+     links: %{"GitHub" => "https://github.com/yltsrc/geocalc",
+              "Docs" => "http://hexdocs.pm/geocalc"}]
   end
 end
