@@ -54,12 +54,12 @@ defmodule Geocalc do
       iex> berlin = [52.5075419, 13.4251364]
       iex> paris = [48.8588589, 2.3475569]
       iex> distance = 500_000
-      iex> Geocalc.destination_point_given_distance_from_start_and_end_point(berlin, paris, distance)
+      iex> Geocalc.destination_point(berlin, paris, distance)
       [50.5582900851695, 6.90714527103055]
   """
-  def destination_point_given_distance_from_start_and_end_point([point_1_lat, point_1_lng], [point_2_lat, point_2_lng], distance) do
+  def destination_point([point_1_lat, point_1_lng], [point_2_lat, point_2_lng], distance) do
     brng = bearing([point_1_lat, point_1_lng], [point_2_lat, point_2_lng])
-    destination_point_given_distance_and_bearing_from_start_point([point_1_lat, point_1_lng], brng, distance)
+    destination_point([point_1_lat, point_1_lng], brng, distance)
   end
 
   @doc """
@@ -70,10 +70,10 @@ defmodule Geocalc do
       iex> berlin = [52.5075419, 13.4251364]
       iex> bearing = -1.9739245359361486
       iex> distance = 100_000
-      iex> Geocalc.destination_point_given_distance_and_bearing_from_start_point(berlin, bearing, distance)
+      iex> Geocalc.destination_point(berlin, bearing, distance)
       [52.147030316318904, 12.076990111001148]
   """
-  def destination_point_given_distance_and_bearing_from_start_point([point_1_lat, point_1_lng], bearing, distance) do
+  def destination_point([point_1_lat, point_1_lng], bearing, distance) do
     rad_lat = :math.asin(:math.sin(degrees_to_radians(point_1_lat)) * :math.cos(distance / @earth_radius) + :math.cos(degrees_to_radians(point_1_lat)) * :math.sin(distance / @earth_radius) * :math.cos(bearing))
     rad_lng = degrees_to_radians(point_1_lng) + :math.atan2(:math.sin(bearing) * :math.sin(distance / @earth_radius) * :math.cos(degrees_to_radians(point_1_lat)), :math.cos(distance / @earth_radius) - :math.sin(degrees_to_radians(point_1_lat)) * :math.sin(rad_lat))
     [radians_to_degrees(rad_lat), radians_to_degrees(rad_lng)]
@@ -87,6 +87,9 @@ defmodule Geocalc do
     normalize_degrees(degrees) * :math.pi / 180
   end
 
+  defp normalize_degrees(degrees) when degrees < -180 do
+    normalize_degrees(degrees + 2 * 180)
+  end
   defp normalize_degrees(degrees) when degrees > 180 do
     normalize_degrees(degrees - 2 * 180)
   end
@@ -102,6 +105,9 @@ defmodule Geocalc do
     normalize_radians(radians) * 180 / :math.pi
   end
 
+  defp normalize_radians(radians) when radians < -@pi do
+    normalize_radians(radians + 2 * :math.pi)
+  end
   defp normalize_radians(radians) when radians > @pi do
     normalize_radians(radians - 2 * :math.pi)
   end
