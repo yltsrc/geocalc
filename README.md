@@ -31,3 +31,8 @@ All the formulas are adapted from
 
     Geocalc.bearing([50.0663889, -5.7147222], [58.6438889, -3.07])
     # => 0.1591708517503001
+
+## Get intersection point given start points and bearings
+
+    Geocalc.intersection([50.0663889, -5.7147222], 2.123, [55.0663889, -15.7147222], 2.123)
+    # => [48.04228582473962, -1.0347033632388496]

@@ -55,12 +55,12 @@ defmodule GeocalcTest do
     assert_in_delta actual_distance, distance, 0.0005
   end
 
-#  test "returns intersection point" do
-#    point_1 = [51.8853, 0.2545]
-#    bearing_1 = Geocalc.degrees_to_radians(108.55)
-#    point_2 = [49.0034, 2.5735]
-#    bearing_2 = Geocalc.degrees_to_radians(32.44)
-#    point_3 = Geocalc.intersection(point_1, bearing_1, point_2, bearing_2)
-#    assert point_3 == [50.9075, 4.5086111]
-#  end
+  test "returns intersection point" do
+    point_1 = [51.8853, 0.2545]
+    bearing_1 = Geocalc.degrees_to_radians(108.56)
+    point_2 = [49.0034, 2.5735]
+    bearing_2 = Geocalc.degrees_to_radians(32.47)
+    point_3 = Geocalc.intersection(point_1, bearing_1, point_2, bearing_2)
+    assert point_3 == [50.90673507027868, 4.509919730256895]
+  end
 end
