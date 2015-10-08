@@ -47,7 +47,7 @@ defmodule Geocalc do
   end
 
   @doc """
-  Finds point between start and end points in direction to end point with given distance.
+  Finds point between start and end points in direction to end point with given distance (in meters).
   Return array with latitude and longitude.
 
   ## Example
@@ -63,7 +63,7 @@ defmodule Geocalc do
   end
 
   @doc """
-  Finds point from start point with given distance and bearing.
+  Finds point from start point with given distance (in meters) and bearing.
   Return array with latitude and longitude.
 
   ## Example
