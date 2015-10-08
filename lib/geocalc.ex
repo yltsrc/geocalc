@@ -48,6 +48,7 @@ defmodule Geocalc do
 
   @doc """
   Finds point between start and end points in direction to end point with given distance (in meters).
+  Finds point from start point with given distance (in meters) and bearing.
   Return array with latitude and longitude.
 
   ## Example
@@ -56,15 +57,6 @@ defmodule Geocalc do
       iex> distance = 500_000
       iex> Geocalc.destination_point(berlin, paris, distance)
       [50.5582900851695, 6.90714527103055]
-  """
-  def destination_point([point_1_lat, point_1_lng], [point_2_lat, point_2_lng], distance) do
-    brng = bearing([point_1_lat, point_1_lng], [point_2_lat, point_2_lng])
-    destination_point([point_1_lat, point_1_lng], brng, distance)
-  end
-
-  @doc """
-  Finds point from start point with given distance (in meters) and bearing.
-  Return array with latitude and longitude.
 
   ## Example
       iex> berlin = [52.5075419, 13.4251364]
@@ -73,6 +65,10 @@ defmodule Geocalc do
       iex> Geocalc.destination_point(berlin, bearing, distance)
       [52.147030316318904, 12.076990111001148]
   """
+  def destination_point([point_1_lat, point_1_lng], [point_2_lat, point_2_lng], distance) do
+    brng = bearing([point_1_lat, point_1_lng], [point_2_lat, point_2_lng])
+    destination_point([point_1_lat, point_1_lng], brng, distance)
+  end
   def destination_point([point_1_lat, point_1_lng], bearing, distance) do
     rad_lat = :math.asin(:math.sin(degrees_to_radians(point_1_lat)) * :math.cos(distance / @earth_radius) + :math.cos(degrees_to_radians(point_1_lat)) * :math.sin(distance / @earth_radius) * :math.cos(bearing))
     rad_lng = degrees_to_radians(point_1_lng) + :math.atan2(:math.sin(bearing) * :math.sin(distance / @earth_radius) * :math.cos(degrees_to_radians(point_1_lat)), :math.cos(distance / @earth_radius) - :math.sin(degrees_to_radians(point_1_lat)) * :math.sin(rad_lat))
