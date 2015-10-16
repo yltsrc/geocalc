@@ -1,9 +1,19 @@
 defmodule Geocalc do
+  defmodule IntersectionNotFound do
+    defexception message: "No intersection point found"
+  end
+
   @earth_radius 6_371_000
   @pi :math.pi
 
   @moduledoc """
   Calculate distance, bearing and more between Latitude/Longitude points.
+
+  For more information please check docs for:
+      Geocalc.distance_between
+      Geocalc.bearing
+      Geocalc.destination_point
+      Geocalc.intersection_point
   """
 
   @doc """
@@ -54,16 +64,32 @@ defmodule Geocalc do
   ## Example
       iex> berlin = [52.5075419, 13.4251364]
       iex> paris = [48.8588589, 2.3475569]
-      iex> distance = 500_000
+      iex> distance = 250_000
       iex> Geocalc.destination_point(berlin, paris, distance)
-      [50.5582900851695, 6.90714527103055]
+      {:ok, [51.578054644172525, 10.096282782248409]}
+
+  ## Example
+      iex> zero_point = [0.0, 0.0]
+      iex> equator_degrees = 90.0
+      iex> equator_bearing = Geocalc.degrees_to_radians(equator_degrees)
+      iex> distance = 1_000_000
+      iex> Geocalc.destination_point(zero_point, equator_bearing, distance)
+      {:ok, [5.484172965344896e-16, 8.993216059187306]}
 
   ## Example
       iex> berlin = [52.5075419, 13.4251364]
       iex> bearing = -1.9739245359361486
       iex> distance = 100_000
       iex> Geocalc.destination_point(berlin, bearing, distance)
-      [52.147030316318904, 12.076990111001148]
+      {:ok, [52.147030316318904, 12.076990111001148]}
+
+  ## Example
+      iex> berlin = [52.5075419, 13.4251364]
+      iex> paris = [48.8588589, 2.3475569]
+      iex> bearing = Geocalc.bearing(berlin, paris)
+      iex> distance = 400_000
+      iex> Geocalc.destination_point(berlin, bearing, distance)
+      {:ok, [50.97658022467569, 8.165929595956982]}
   """
   def destination_point([point_1_lat, point_1_lng], [point_2_lat, point_2_lng], distance) do
     brng = bearing([point_1_lat, point_1_lng], [point_2_lat, point_2_lng])
@@ -72,7 +98,7 @@ defmodule Geocalc do
   def destination_point([point_1_lat, point_1_lng], bearing, distance) do
     rad_lat = :math.asin(:math.sin(degrees_to_radians(point_1_lat)) * :math.cos(distance / @earth_radius) + :math.cos(degrees_to_radians(point_1_lat)) * :math.sin(distance / @earth_radius) * :math.cos(bearing))
     rad_lng = degrees_to_radians(point_1_lng) + :math.atan2(:math.sin(bearing) * :math.sin(distance / @earth_radius) * :math.cos(degrees_to_radians(point_1_lat)), :math.cos(distance / @earth_radius) - :math.sin(degrees_to_radians(point_1_lat)) * :math.sin(rad_lat))
-    [radians_to_degrees(rad_lat), radians_to_degrees(rad_lng)]
+    {:ok, [radians_to_degrees(rad_lat), radians_to_degrees(rad_lng)]}
   end
 
   @doc """
@@ -85,43 +111,53 @@ defmodule Geocalc do
       iex> berlin_bearing = -1.974
       iex> london = [51.5286416, -0.1015987]
       iex> london_bearing = 1.512
-      iex> Geocalc.intersection(berlin, berlin_bearing, london, london_bearing)
-      [51.4757093398206, 9.75751801580032]
+      iex> Geocalc.intersection_point(berlin, berlin_bearing, london, london_bearing)
+      {:ok, [51.4757093398206, 9.75751801580032]}
+
+  ## Example
+      iex> berlin = [52.5075419, 13.4251364]
+      iex> bearing = Geocalc.degrees_to_radians(90.0)
+      iex> Geocalc.intersection_point(berlin, bearing, berlin, bearing)
+      {:error, "No intersection point found"}
   """
-  def intersection([point_1_lat, point_1_lng], bearing_1, [point_2_lat, point_2_lng], bearing_2) do
-    fo_1 = degrees_to_radians(point_1_lat)
-    la_1 = degrees_to_radians(point_1_lng)
-    fo_2 = degrees_to_radians(point_2_lat)
-    la_2 = degrees_to_radians(point_2_lng)
-    bo_13 = bearing_1
-    bo_23 = bearing_2
+  def intersection_point([point_1_lat, point_1_lng], bearing_1, [point_2_lat, point_2_lng], bearing_2) do
+    try do
+      fo_1 = degrees_to_radians(point_1_lat)
+      la_1 = degrees_to_radians(point_1_lng)
+      fo_2 = degrees_to_radians(point_2_lat)
+      la_2 = degrees_to_radians(point_2_lng)
+      bo_13 = bearing_1
+      bo_23 = bearing_2
 
-    diff_fo = fo_2 - fo_1
-    diff_la = la_2 - la_1
-    be_12 = 2 * :math.asin(:math.sqrt(:math.sin(diff_fo / 2) * :math.sin(diff_fo / 2) + :math.cos(fo_1) * :math.cos(fo_2) * :math.sin(diff_la / 2) * :math.sin(diff_la / 2)))
-    if be_12 == 0, do: raise "No intersection point found"
+      diff_fo = fo_2 - fo_1
+      diff_la = la_2 - la_1
+      be_12 = 2 * :math.asin(:math.sqrt(:math.sin(diff_fo / 2) * :math.sin(diff_fo / 2) + :math.cos(fo_1) * :math.cos(fo_2) * :math.sin(diff_la / 2) * :math.sin(diff_la / 2)))
+      if be_12 == 0, do: raise IntersectionNotFound
 
-    bo_1 = :math.acos((:math.sin(fo_2) - :math.sin(fo_1) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_1)))
-    bo_2 = :math.acos((:math.sin(fo_1) - :math.sin(fo_2) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_2)))
-    if :math.sin(la_2 - la_1) > 0 do
-      bo_12 = bo_1
-      bo_21 = 2 * :math.pi - bo_2
-    else
-      bo_12 = 2 * :math.pi - bo_1
-      bo_21 = bo_2
+      bo_1 = :math.acos((:math.sin(fo_2) - :math.sin(fo_1) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_1)))
+      bo_2 = :math.acos((:math.sin(fo_1) - :math.sin(fo_2) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_2)))
+      if :math.sin(la_2 - la_1) > 0 do
+        bo_12 = bo_1
+        bo_21 = 2 * :math.pi - bo_2
+      else
+        bo_12 = 2 * :math.pi - bo_1
+        bo_21 = bo_2
+      end
+      a_1 = rem_float((bo_13 - bo_12 + :math.pi), (2 * :math.pi)) - :math.pi
+      a_2 = rem_float((bo_21 - bo_23 + :math.pi), (2 * :math.pi)) - :math.pi
+      if :math.sin(a_1) == 0 && :math.sin(a_2) == 0, do: raise IntersectionNotFound
+      if :math.sin(a_1) * :math.sin(a_2) < 0, do: raise IntersectionNotFound
+
+      a_3 = :math.acos(-:math.cos(a_1) * :math.cos(a_2) + :math.sin(a_1) * :math.sin(a_2) * :math.cos(be_12))
+      be_13 = :math.atan2(:math.sin(be_12) * :math.sin(a_1) * :math.sin(a_2), :math.cos(a_2) + :math.cos(a_1) * :math.cos(a_3))
+      fo_3 = :math.asin(:math.sin(fo_1) * :math.cos(be_13) + :math.cos(fo_1) * :math.sin(be_13) * :math.cos(bo_13))
+      diff_la_13 = :math.atan2(:math.sin(bo_13) * :math.sin(be_13) * :math.cos(fo_1), :math.cos(be_13) - :math.sin(fo_1) * :math.sin(fo_3))
+      la_3 = la_1 + diff_la_13
+
+      {:ok, [radians_to_degrees(fo_3), radians_to_degrees(la_3)]}
+    rescue
+      e in IntersectionNotFound -> {:error, e.message}
     end
-    a_1 = rem_float((bo_13 - bo_12 + :math.pi), (2 * :math.pi)) - :math.pi
-    a_2 = rem_float((bo_21 - bo_23 + :math.pi), (2 * :math.pi)) - :math.pi
-    if :math.sin(a_1) == 0 && :math.sin(a_2) == 0, do: raise "No intersection point found"
-    if :math.sin(a_1) * :math.sin(a_2) < 0, do: raise "No intersection point found"
-
-    a_3 = :math.acos(-:math.cos(a_1) * :math.cos(a_2) + :math.sin(a_1) * :math.sin(a_2) * :math.cos(be_12))
-    be_13 = :math.atan2(:math.sin(be_12) * :math.sin(a_1) * :math.sin(a_2), :math.cos(a_2) + :math.cos(a_1) * :math.cos(a_3))
-    fo_3 = :math.asin(:math.sin(fo_1) * :math.cos(be_13) + :math.cos(fo_1) * :math.sin(be_13) * :math.cos(bo_13))
-    diff_la_13 = :math.atan2(:math.sin(bo_13) * :math.sin(be_13) * :math.cos(fo_1), :math.cos(be_13) - :math.sin(fo_1) * :math.sin(fo_3))
-    la_3 = la_1 + diff_la_13
-
-    [radians_to_degrees(fo_3), radians_to_degrees(la_3)]
   end
 
   defp rem_float(float_1, float_2) when float_1 < float_2 and float_1 < 0 and float_2 > 0 do
