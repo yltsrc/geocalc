@@ -8,8 +8,8 @@ defmodule GeocalcTest do
   end
 
   test "calculates distance between Minsk and London" do
-    minsk = [53.8838884, 27.5949741]
-    london = [51.5286416, -0.1015987]
+    minsk = %{lat: 53.8838884, lon: 27.5949741}
+    london = %{lat: 51.5286416, lon: -0.1015987}
     assert_in_delta Geocalc.distance_between(minsk, london), 1_872_028.5, 0.05
   end
 
@@ -20,8 +20,8 @@ defmodule GeocalcTest do
   end
 
   test "calculates bearing between Minsk and London" do
-    minsk = [53.8838884, 27.5949741]
-    london = [51.5286416, -0.1015987]
+    minsk = %{latitude: 53.8838884, longitude: 27.5949741}
+    london = %{latitude: 51.5286416, longitude: -0.1015987}
     assert_in_delta Geocalc.bearing(minsk, london), -1.513836, 0.000001
   end
 
@@ -29,15 +29,16 @@ defmodule GeocalcTest do
     point_1 = [1.234, 2.345]
     point_2 = [3.654, 4.765]
     distance = 1_000
-    {:ok, point_3} = Geocalc.destination_point(point_1, point_2, distance)
+    brng = Geocalc.bearing(point_1, point_2)
+    {:ok, point_3} = Geocalc.destination_point(point_1, brng, distance)
     assert_in_delta Geocalc.distance_between(point_3, [1.2403670648864074, 2.3513527343464733]), 0, 0.0005
     actual_distance = Geocalc.distance_between(point_3, point_1)
     assert_in_delta actual_distance, distance, 0.0005
   end
 
   test "returns destination point in pacific ocean near Japan" do
-    point_1 = [46.118942, 150.402832]
-    point_2 = [21.913108, -160.193712]
+    point_1 = %{lat: 46.118942, lng: 150.402832}
+    point_2 = %{lat: 21.913108, lng: -160.193712}
     distance = 1_178_348
     {:ok, point_3} = Geocalc.destination_point(point_1, point_2, distance)
     assert_in_delta Geocalc.distance_between(point_3, [42.64962243973242, 164.43934677825277]), 0, 0.0005
@@ -62,5 +63,20 @@ defmodule GeocalcTest do
     bearing_2 = Geocalc.degrees_to_radians(32.47)
     {:ok, point_3} = Geocalc.intersection_point(point_1, bearing_1, point_2, bearing_2)
     assert point_3 == [50.90673507027868, 4.509919730256895]
+  end
+
+  test "all roads lead to Rome" do
+    milan = [45.4628328, 9.1076929]
+    naples = [40.8536668, 14.2079876]
+    rome = [41.9102415, 12.3959161]
+    {:ok, point_3} = Geocalc.intersection_point(milan, rome, naples, rome)
+    assert_in_delta Geocalc.distance_between(point_3, rome), 0, 0.0005
+  end
+
+  test "returns error message if intersection point not found" do
+    minsk = %{lat: 53.8838884, lon: 27.5949741}
+    bearing = Geocalc.degrees_to_radians(0)
+    {:error, msg} = Geocalc.intersection_point(minsk, bearing, minsk, bearing)
+    assert msg == "No intersection point found"
   end
 end
