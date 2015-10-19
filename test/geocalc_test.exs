@@ -47,8 +47,8 @@ defmodule GeocalcTest do
   end
 
   test "returns destination point in pacific ocean near Hawaii" do
-    point_1 = [46.118942, 150.402832]
-    point_2 = [21.913108, -160.193712]
+    point_1 = {46.118942, 150.402832}
+    point_2 = {21.913108, -160.193712}
     distance = 4_178_348
     {:ok, point_3} = Geocalc.destination_point(point_1, point_2, distance)
     assert_in_delta Geocalc.distance_between(point_3, [27.939238854720823, -167.5615280845497]), 0, 0.0005
@@ -66,9 +66,9 @@ defmodule GeocalcTest do
   end
 
   test "all roads lead to Rome" do
-    milan = [45.4628328, 9.1076929]
-    naples = [40.8536668, 14.2079876]
-    rome = [41.9102415, 12.3959161]
+    milan = {45.4628328, 9.1076929}
+    naples = {40.8536668, 14.2079876}
+    rome = {41.9102415, 12.3959161}
     {:ok, point_3} = Geocalc.intersection_point(milan, rome, naples, rome)
     assert_in_delta Geocalc.distance_between(point_3, rome), 0, 0.0005
   end
