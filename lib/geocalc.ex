@@ -31,6 +31,7 @@ defmodule Geocalc do
       344229.88946533133
   """
   @spec distance_between(list, list) :: number
+  @spec distance_between(tuple, tuple) :: number
   @spec distance_between(map, map) :: number
   def distance_between(point_1, point_2) do
     fo_1 = degrees_to_radians(Point.latitude(point_1))
@@ -47,8 +48,8 @@ defmodule Geocalc do
   Return radians.
 
   ## Example
-      iex> berlin = [52.5075419, 13.4251364]
-      iex> paris = [48.8588589, 2.3475569]
+      iex> berlin = {52.5075419, 13.4251364}
+      iex> paris = {48.8588589, 2.3475569}
       iex> Geocalc.bearing(berlin, paris)
       -1.9739245359361486
       iex> Geocalc.bearing(paris, berlin)
@@ -61,6 +62,7 @@ defmodule Geocalc do
       -1.9739245359361486
   """
   @spec bearing(list, list) :: number
+  @spec bearing(tuple, tuple) :: number
   @spec bearing(map, map) :: number
   def bearing(point_1, point_2) do
     fo_1 = degrees_to_radians(Point.latitude(point_1))
@@ -86,7 +88,7 @@ defmodule Geocalc do
       {:ok, [50.97658022467569, 8.165929595956982]}
 
   ## Example
-      iex> zero_point = [0.0, 0.0]
+      iex> zero_point = {0.0, 0.0}
       iex> equator_degrees = 90.0
       iex> equator_bearing = Geocalc.degrees_to_radians(equator_degrees)
       iex> distance = 1_000_000
@@ -94,7 +96,7 @@ defmodule Geocalc do
       {:ok, [5.484172965344896e-16, 8.993216059187306]}
 
   ## Example
-      iex> berlin = [52.5075419, 13.4251364]
+      iex> berlin = %{lat: 52.5075419, lon: 13.4251364}
       iex> bearing = -1.9739245359361486
       iex> distance = 100_000
       iex> Geocalc.destination_point(berlin, bearing, distance)
@@ -108,8 +110,10 @@ defmodule Geocalc do
       {:ok, [51.578054644172525, 10.096282782248409]}
   """
   @spec destination_point(list, list, number) :: tuple
+  @spec destination_point(tuple, tuple, number) :: tuple
   @spec destination_point(map, map, number) :: tuple
   @spec destination_point(list, number, number) :: tuple
+  @spec destination_point(tuple, number, number) :: tuple
   @spec destination_point(map, number, number) :: tuple
   def destination_point(point_1, bearing, distance) when is_number(bearing)  do
     fo_1 = degrees_to_radians(Point.latitude(point_1))
@@ -137,9 +141,9 @@ defmodule Geocalc do
       {:ok, [51.4757093398206, 9.75751801580032]}
 
   ## Example
-      iex> berlin = [52.5075419, 13.4251364]
-      iex> london = [51.5286416, -0.1015987]
-      iex> paris = [48.8588589, 2.3475569]
+      iex> berlin = {52.5075419, 13.4251364}
+      iex> london = {51.5286416, -0.1015987}
+      iex> paris = {48.8588589, 2.3475569}
       iex> Geocalc.intersection_point(berlin, paris, london, paris)
       {:ok, [48.858858899999994, 2.3475569000000003]}
 
@@ -150,8 +154,16 @@ defmodule Geocalc do
       {:error, "No intersection point found"}
   """
   @spec intersection_point(list, list, list, list) :: tuple
+  @spec intersection_point(tuple, tuple, tuple, tuple) :: tuple
   @spec intersection_point(map, map, map, map) :: tuple
+  @spec intersection_point(list, list, list, number) :: tuple
+  @spec intersection_point(tuple, tuple, tuple, number) :: tuple
+  @spec intersection_point(map, map, map, number) :: tuple
+  @spec intersection_point(list, number, list, list) :: tuple
+  @spec intersection_point(tuple, number, tuple, tuple) :: tuple
+  @spec intersection_point(map, number, map, map) :: tuple
   @spec intersection_point(list, number, list, number) :: tuple
+  @spec intersection_point(tuple, number, tuple, number) :: tuple
   @spec intersection_point(map, number, map, number) :: tuple
   def intersection_point(point_1, bearing_1, point_2, bearing_2) when is_number(bearing_1) and is_number(bearing_2) do
     try do
