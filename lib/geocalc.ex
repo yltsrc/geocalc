@@ -1,13 +1,13 @@
 defmodule Geocalc do
-  alias Geocalc.IntersectionNotFoundError
+  @moduledoc """
+  Calculate distance, bearing and more between Latitude/Longitude points.
+  """
+
   alias Geocalc.Point
 
   @earth_radius 6_371_000
   @pi :math.pi
-
-  @moduledoc """
-  Calculate distance, bearing and more between Latitude/Longitude points.
-  """
+  @intersection_not_found "No intersection point found"
 
   @doc """
   Calculates distance between 2 points.
@@ -152,8 +152,8 @@ defmodule Geocalc do
   def intersection_point(point_1, bearing_1, point_2, bearing_2) when is_number(bearing_1) and is_number(bearing_2) do
     try do
       intersection_point!(point_1, bearing_1, point_2, bearing_2)
-    rescue
-      e in IntersectionNotFoundError -> {:error, e.message}
+    catch
+      message -> {:error, message}
     end
   end
   def intersection_point(point_1, bearing_1, point_3, point_4) when is_number(bearing_1) do
@@ -180,7 +180,7 @@ defmodule Geocalc do
     diff_fo = fo_2 - fo_1
     diff_la = la_2 - la_1
     be_12 = 2 * :math.asin(:math.sqrt(:math.sin(diff_fo / 2) * :math.sin(diff_fo / 2) + :math.cos(fo_1) * :math.cos(fo_2) * :math.sin(diff_la / 2) * :math.sin(diff_la / 2)))
-    if be_12 == 0, do: raise IntersectionNotFoundError
+    if be_12 == 0, do: throw @intersection_not_found
 
     bo_1 = :math.acos((:math.sin(fo_2) - :math.sin(fo_1) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_1)))
     bo_2 = :math.acos((:math.sin(fo_1) - :math.sin(fo_2) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_2)))
@@ -193,8 +193,8 @@ defmodule Geocalc do
     end
     a_1 = rem_float((bo_13 - bo_12 + :math.pi), (2 * :math.pi)) - :math.pi
     a_2 = rem_float((bo_21 - bo_23 + :math.pi), (2 * :math.pi)) - :math.pi
-    if :math.sin(a_1) == 0 && :math.sin(a_2) == 0, do: raise IntersectionNotFoundError
-    if :math.sin(a_1) * :math.sin(a_2) < 0, do: raise IntersectionNotFoundError
+    if :math.sin(a_1) == 0 && :math.sin(a_2) == 0, do: throw @intersection_not_found
+    if :math.sin(a_1) * :math.sin(a_2) < 0, do: throw @intersection_not_found
 
     a_3 = :math.acos(-:math.cos(a_1) * :math.cos(a_2) + :math.sin(a_1) * :math.sin(a_2) * :math.cos(be_12))
     be_13 = :math.atan2(:math.sin(be_12) * :math.sin(a_1) * :math.sin(a_2), :math.cos(a_2) + :math.cos(a_1) * :math.cos(a_3))
