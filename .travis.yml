@@ -5,3 +5,7 @@ elixir:
 otp_release:
   - 18.0
   - 18.1
+cache:
+  directories:
+    - _build
+    - deps
