@@ -33,9 +33,9 @@ defmodule Geocalc.Mixfile do
   # Type `mix help deps` for more examples and options
   defp deps do
     [
-      { :ex_doc, "~> 0.10.0", only: :dev },
-      { :mix_test_watch, "~> 0.2.4", only: :dev },
-      { :coverex, "~> 1.4.3", only: :test }
+      {:mix_test_watch, "~> 0.2.4", only: :dev},
+      {:ex_doc, "~> 0.11.1", only: :dev},
+      {:coverex, "~> 1.4.8", only: :test}
     ]
   end
 

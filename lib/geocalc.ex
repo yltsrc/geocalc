@@ -107,11 +107,11 @@ defmodule Geocalc do
   """
   @spec destination_point(Point.t, Point.t, number) :: tuple
   @spec destination_point(Point.t, number, number) :: tuple
-  def destination_point(point_1, bearing, distance) when is_number(bearing)  do
+  def destination_point(point_1, brng, distance) when is_number(brng)  do
     fo_1 = degrees_to_radians(Point.latitude(point_1))
     la_1 = degrees_to_radians(Point.longitude(point_1))
-    rad_lat = :math.asin(:math.sin(fo_1) * :math.cos(distance / @earth_radius) + :math.cos(fo_1) * :math.sin(distance / @earth_radius) * :math.cos(bearing))
-    rad_lng = la_1 + :math.atan2(:math.sin(bearing) * :math.sin(distance / @earth_radius) * :math.cos(fo_1), :math.cos(distance / @earth_radius) - :math.sin(fo_1) * :math.sin(rad_lat))
+    rad_lat = :math.asin(:math.sin(fo_1) * :math.cos(distance / @earth_radius) + :math.cos(fo_1) * :math.sin(distance / @earth_radius) * :math.cos(brng))
+    rad_lng = la_1 + :math.atan2(:math.sin(brng) * :math.sin(distance / @earth_radius) * :math.cos(fo_1), :math.cos(distance / @earth_radius) - :math.sin(fo_1) * :math.sin(rad_lat))
     {:ok, [radians_to_degrees(rad_lat), radians_to_degrees(rad_lng)]}
   end
   def destination_point(point_1, point_2, distance) do
@@ -126,18 +126,18 @@ defmodule Geocalc do
 
   ## Example
       iex> berlin = [52.5075419, 13.4251364]
-      iex> berlin_bearing = -1.974
+      iex> berlin_bearing = -2.102
       iex> london = [51.5286416, -0.1015987]
-      iex> london_bearing = 1.512
+      iex> london_bearing = 1.502
       iex> Geocalc.intersection_point(berlin, berlin_bearing, london, london_bearing)
-      {:ok, [51.4757093398206, 9.75751801580032]}
+      {:ok, [51.49271112601574, 10.735322818996854]}
 
   ## Example
       iex> berlin = {52.5075419, 13.4251364}
       iex> london = {51.5286416, -0.1015987}
       iex> paris = {48.8588589, 2.3475569}
-      iex> Geocalc.intersection_point(berlin, paris, london, paris)
-      {:ok, [48.858858899999994, 2.3475569000000003]}
+      iex> Geocalc.intersection_point(berlin, london, paris, london)
+      {:ok, [51.5286416, -0.10159869999999019]}
 
   ## Example
       iex> berlin = %{lat: 52.5075419, lng: 13.4251364}
@@ -179,11 +179,11 @@ defmodule Geocalc do
 
     diff_fo = fo_2 - fo_1
     diff_la = la_2 - la_1
-    be_12 = 2 * :math.asin(:math.sqrt(:math.sin(diff_fo / 2) * :math.sin(diff_fo / 2) + :math.cos(fo_1) * :math.cos(fo_2) * :math.sin(diff_la / 2) * :math.sin(diff_la / 2)))
+    be_12 = 2 * :math.asin(guard_one_minus_one(:math.sqrt(:math.sin(diff_fo / 2) * :math.sin(diff_fo / 2) + :math.cos(fo_1) * :math.cos(fo_2) * :math.sin(diff_la / 2) * :math.sin(diff_la / 2))))
     if be_12 == 0, do: throw @intersection_not_found
 
-    bo_1 = :math.acos((:math.sin(fo_2) - :math.sin(fo_1) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_1)))
-    bo_2 = :math.acos((:math.sin(fo_1) - :math.sin(fo_2) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_2)))
+    bo_1 = :math.acos(guard_one_minus_one((:math.sin(fo_2) - :math.sin(fo_1) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_1))))
+    bo_2 = :math.acos(guard_one_minus_one((:math.sin(fo_1) - :math.sin(fo_2) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_2))))
     if :math.sin(la_2 - la_1) > 0 do
       bo_12 = bo_1
       bo_21 = 2 * :math.pi - bo_2
@@ -193,26 +193,29 @@ defmodule Geocalc do
     end
     a_1 = rem_float((bo_13 - bo_12 + :math.pi), (2 * :math.pi)) - :math.pi
     a_2 = rem_float((bo_21 - bo_23 + :math.pi), (2 * :math.pi)) - :math.pi
-    if :math.sin(a_1) == 0 && :math.sin(a_2) == 0, do: throw @intersection_not_found
-    if :math.sin(a_1) * :math.sin(a_2) < 0, do: throw @intersection_not_found
+    if :math.sin(a_1) == 0 && :math.sin(a_2) == 0, do: throw @intersection_not_found # infinite intersections
+    if :math.sin(a_1) * :math.sin(a_2) < 0, do: throw @intersection_not_found # ambiguous intersection
 
-    a_3 = :math.acos(-:math.cos(a_1) * :math.cos(a_2) + :math.sin(a_1) * :math.sin(a_2) * :math.cos(be_12))
+    a_3 = :math.acos(guard_one_minus_one(-:math.cos(a_1) * :math.cos(a_2) + :math.sin(a_1) * :math.sin(a_2) * :math.cos(be_12)))
     be_13 = :math.atan2(:math.sin(be_12) * :math.sin(a_1) * :math.sin(a_2), :math.cos(a_2) + :math.cos(a_1) * :math.cos(a_3))
-    fo_3 = :math.asin(:math.sin(fo_1) * :math.cos(be_13) + :math.cos(fo_1) * :math.sin(be_13) * :math.cos(bo_13))
+    fo_3 = :math.asin(guard_one_minus_one(:math.sin(fo_1) * :math.cos(be_13) + :math.cos(fo_1) * :math.sin(be_13) * :math.cos(bo_13)))
     diff_la_13 = :math.atan2(:math.sin(bo_13) * :math.sin(be_13) * :math.cos(fo_1), :math.cos(be_13) - :math.sin(fo_1) * :math.sin(fo_3))
     la_3 = la_1 + diff_la_13
 
     {:ok, [radians_to_degrees(fo_3), radians_to_degrees(la_3)]}
   end
 
-  defp rem_float(float_1, float_2) when float_1 < float_2 and float_1 < 0 and float_2 > 0 do
-    rem_float(float_1 + float_2, float_2)
+  defp guard_one_minus_one(int) do
+    if int > 1, do: throw @intersection_not_found
+    if int < -1, do: throw @intersection_not_found
+    int
   end
-  defp rem_float(float_1, float_2) when float_1 < float_2 and float_2 > 0 do
-    float_1
+
+  def rem_float(float_1, float_2) when float_1 < 0 do
+    float_1 - (Float.ceil(float_1 / float_2) * float_2)
   end
-  defp rem_float(float_1, float_2) when float_2 > 0 do
-    rem_float(float_1 - float_2, float_2)
+  def rem_float(float_1, float_2) do
+    float_1 - (Float.floor(float_1 / float_2) * float_2)
   end
 
   @doc """

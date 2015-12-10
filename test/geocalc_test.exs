@@ -80,4 +80,20 @@ defmodule GeocalcTest do
     {:error, msg} = Geocalc.intersection_point(minsk, bearing, minsk, bearing)
     assert msg == "No intersection point found"
   end
+
+  test "returns error message for two parallel destinations" do
+    point_1 = %{lat: 30, lon: 0}
+    point_2 = %{lat: 60, lon: 0}
+    bearing = Geocalc.degrees_to_radians(90)
+    {:error, msg} = Geocalc.intersection_point(point_1, bearing, point_2, bearing)
+    assert msg == "No intersection point found"
+  end
+
+  test "returns error message for two perpendicular destinations" do
+    point = %{lat: 0, lon: 0}
+    bearing_1 = Geocalc.degrees_to_radians(0)
+    bearing_2 = Geocalc.degrees_to_radians(90)
+    {:error, msg} = Geocalc.intersection_point(point, bearing_1, point, bearing_2)
+    assert msg == "No intersection point found"
+  end
 end
