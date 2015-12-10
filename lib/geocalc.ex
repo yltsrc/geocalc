@@ -211,10 +211,10 @@ defmodule Geocalc do
     int
   end
 
-  def rem_float(float_1, float_2) when float_1 < 0 do
+  defp rem_float(float_1, float_2) when float_1 < 0 do
     float_1 - (Float.ceil(float_1 / float_2) * float_2)
   end
-  def rem_float(float_1, float_2) do
+  defp rem_float(float_1, float_2) do
     float_1 - (Float.floor(float_1 / float_2) * float_2)
   end
 
