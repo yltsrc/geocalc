@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/yltsrc/geocalc.svg?branch=master)](https://travis-ci.org/yltsrc/geocalc)
 [![Hex.pm](https://img.shields.io/hexpm/v/geocalc.svg)](https://hex.pm/packages/geocalc)
 
+Documentation: [http://hexdocs.pm/geocalc](http://hexdocs.pm/geocalc)
 
 Calculate distance, bearing and more between latitude/longitude points
 
