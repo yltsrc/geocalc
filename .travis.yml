@@ -2,6 +2,7 @@ language: elixir
 elixir:
   - 1.0.5
   - 1.1.1
+  - 1.2.0
 otp_release:
   - 17.4
   - 18.0
@@ -16,6 +17,8 @@ matrix:
     - elixir: 1.0.5
       otp_release: 18.2
     - elixir: 1.1.1
+      otp_release: 17.4
+    - elixir: 1.2.0
       otp_release: 17.4
 cache:
   directories:
