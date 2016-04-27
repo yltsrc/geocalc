@@ -10,38 +10,77 @@ Calculate distance, bearing and more between latitude/longitude points
 All the formulas are adapted from
 [http://www.movable-type.co.uk/scripts/latlong.html](http://www.movable-type.co.uk/scripts/latlong.html)
 
-## Public API
+## Installation
+
+First, add Poison to your `mix.exs` dependencies:
+
+```elixir
+def deps do
+  [{:geocalc, "~> 0.4"}]
+end
+```
+
+Then, update your dependencies:
+
+```sh-session
+$ mix deps.get
+```
+
+While it is not an OTP app you don't need to add it to application in mix.exs
+
+## Usage
 
 ### Calculate distance between 2 points
 
-    Geocalc.distance_between([50.0663889, -5.7147222], [58.6438889, -3.07])
-    # => 968853.5464535094
-    
+```elixir
+Geocalc.distance_between([50.0663889, -5.7147222], [58.6438889, -3.07])
+# => 968853.5464535094
+```
 
 ### Get destination point given distance from start and end point
 
-    Geocalc.destination_point([50.0663889, -5.7147222], [58.6438889, -3.07], 100_000)
-    # => {:ok, [50.95412546615634, -5.488452905258299]}
-
+```elixir
+Geocalc.destination_point([50.0663889, -5.7147222], [58.6438889, -3.07], 100_000)
+# => {:ok, [50.95412546615634, -5.488452905258299]}
+```
 
 ### Get destination point given distance and bearing from start point
 
-    Geocalc.destination_point([50.0663889, -5.7147222], 2.123, 100_000)
-    # => {:ok, [49.58859917965055, -4.533613856982982]}
-    
-    
+```elixir
+Geocalc.destination_point([50.0663889, -5.7147222], 2.123, 100_000)
+# => {:ok, [49.58859917965055, -4.533613856982982]}
+```
+
 ### Calculate bearing from start and end points
 
-    Geocalc.bearing([50.0663889, -5.7147222], [58.6438889, -3.07])
-    # => 0.1591708517503001
+```elixir
+Geocalc.bearing([50.0663889, -5.7147222], [58.6438889, -3.07])
+# => 0.1591708517503001
+```
 
 ### Get intersection point given start points and bearings
 
-    Geocalc.intersection_point([50.0663889, -5.7147222], 2.123, [55.0663889, -15.7147222], 2.123)
-    # => {:ok, [48.04228582473962, -1.0347033632388496]}
+```elixir
+Geocalc.intersection_point([50.0663889, -5.7147222], 2.123, [55.0663889, -15.7147222], 2.123)
+# => {:ok, [48.04228582473962, -1.0347033632388496]}
 
-    Geocalc.intersection_point([50.0663889, -5.7147222], 2.123, [50.0663889, -5.7147222], 2.123)
-    # => {:error, "No intersection point found"}
+Geocalc.intersection_point([50.0663889, -5.7147222], 2.123, [50.0663889, -5.7147222], 2.123)
+# => {:error, "No intersection point found"}
+```
+
+### Convert degrees to radians
+
+```elixir
+Geocalc.degrees_to_radians(245)
+# => -2.007128639793479
+```
+
+### Convert radians to degrees
+
+```elixir
+Geocalc.radians_to_degrees(1.234)
+# => 70.70299191914359
+```
 
 
 ## Geocalc.Point protocol
