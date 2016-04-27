@@ -35,7 +35,8 @@ defmodule Geocalc.Mixfile do
     [
       {:mix_test_watch, "~> 0.2.4", only: :dev},
       {:ex_doc, "~> 0.11.1", only: :dev},
-      {:coverex, "~> 1.4.8", only: :test}
+      {:coverex, "~> 1.4.8", only: :test},
+      {:benchfella, "~> 0.3.0", only: :bench}
     ]
   end
 
