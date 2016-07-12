@@ -6,11 +6,25 @@ defmodule Geocalc do
   use Application
 
   alias Geocalc.Point
-  alias Geocalc.Sup
   alias Geocalc.Calculator
 
+  # See http://elixir-lang.org/docs/stable/elixir/Application.html
+  # for more information on OTP Applications
   def start(_type, _args) do
-    Sup.start_link()
+    import Supervisor.Spec, warn: false
+
+    # Define workers and child supervisors to be supervised
+    children = [
+      # Starts a worker by calling:
+      # Geocalc.Calculator.start_link()
+      worker(Calculator, []),
+    ]
+
+    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
+    # for other strategies and supported options
+    opts = [strategy: :one_for_one, name: Geocalc.Supervisor,
+            max_restarts: 1_000, max_seconds: 1]
+    Supervisor.start_link(children, opts)
   end
 
   @doc """
