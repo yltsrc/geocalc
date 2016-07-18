@@ -12,11 +12,11 @@ All the formulas are adapted from
 
 ## Installation
 
-First, add Poison to your `mix.exs` dependencies:
+First, add Geocalc to your `mix.exs` dependencies:
 
 ```elixir
 def deps do
-  [{:geocalc, "~> 0.4"}]
+  [{:geocalc, "~> 0.5"}]
 end
 ```
 
@@ -26,7 +26,15 @@ Then, update your dependencies:
 $ mix deps.get
 ```
 
-While it is not an OTP app you don't need to add it to application in mix.exs
+Now, list the `:geocalc` application as your
+application dependency:
+
+```elixir
+def application do
+  [applications: [:geocalc]]
+end
+```
+
 
 ## Usage
 
