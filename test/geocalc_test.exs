@@ -96,4 +96,10 @@ defmodule GeocalcTest do
     {:error, msg} = Geocalc.intersection_point(point, bearing_1, point, bearing_2)
     assert msg == "No intersection point found"
   end
+
+  test "returns a bounding box given a point and a radius in meters" do
+    point = [52.5075419, 13.4251364]
+    radius = 10_000
+    assert Geocalc.bounding_box(point, radius) == [[52.417520954378574, 13.277235453275123], [52.59756284562143, 13.573037346724874]]
+  end
 end
