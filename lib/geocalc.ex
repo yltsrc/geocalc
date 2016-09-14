@@ -152,6 +152,23 @@ defmodule Geocalc do
   end
 
   @doc """
+  Calculates a bounding box around a point with a radius in meters
+  Returns an array with 2 points (list format). The bottom left point,
+  and the top-right one
+
+  ## Example
+      iex> berlin = [52.5075419, 13.4251364]
+      iex> radius = 10_000
+      iex> Geocalc.bounding_box(berlin, radius)
+      [[52.417520954378574, 13.277235453275123], [52.59756284562143, 13.573037346724874]]
+  """
+
+  @spec bounding_box(Point.t, number) :: list
+  def bounding_box(point, radius_in_m) do
+    GenServer.call(Calculator, {:bounding_box, point, radius_in_m})
+  end
+
+  @doc """
   Converts radians to degrees.
   Return degrees.
 

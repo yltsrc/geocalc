@@ -37,6 +37,10 @@ defmodule Geocalc.Calculator do
     {:reply, radians_to_degrees(radians), state}
   end
 
+  def handle_call({:bounding_box, point, radius_in_m}, _from, state) do
+    {:reply, bounding_box(point, radius_in_m), state}
+  end
+
   @earth_radius 6_371_000
   @pi :math.pi
   @intersection_not_found "No intersection point found"
@@ -166,5 +170,35 @@ defmodule Geocalc.Calculator do
   end
   defp normalize_radians(radians) do
     radians
+  end
+
+  def bounding_box(point, radius_in_m) do
+    lat = degrees_to_radians(Point.latitude(point))
+    lon = degrees_to_radians(Point.longitude(point))
+    radius = earth_radius(lat)
+    pradius = radius * :math.cos(lat)
+
+    lat_min = lat - radius_in_m/radius
+    lat_max = lat + radius_in_m/radius
+    lon_min = lon - radius_in_m/pradius
+    lon_max = lon + radius_in_m/pradius
+
+    [
+      [radians_to_degrees(lat_min), radians_to_degrees(lon_min)],
+      [radians_to_degrees(lat_max), radians_to_degrees(lon_max)],
+    ]
+  end
+
+  # Semi-axes of WGS-84 geoidal reference
+  @wgsa 6378137.0  # Major semiaxis [m]
+  @wgsb 6356752.3  # Minor semiaxis [m]
+
+  defp earth_radius(lat) do
+    # http://en.wikipedia.org/wiki/Earth_radius
+    an = @wgsa * @wgsa * :math.cos(lat)
+    bn = @wgsb * @wgsb * :math.sin(lat)
+    ad = @wgsa * :math.cos(lat)
+    bd = @wgsb * :math.sin(lat)
+    :math.sqrt( (an*an + bn*bn)/(ad*ad + bd*bd) )
   end
 end
