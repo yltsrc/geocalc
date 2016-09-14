@@ -38,21 +38,21 @@ end
 
 ## Usage
 
-### Calculate distance between 2 points
+### Calculate distance (in meters) between 2 points
 
 ```elixir
 Geocalc.distance_between([50.0663889, -5.7147222], [58.6438889, -3.07])
 # => 968853.5464535094
 ```
 
-### Get destination point given distance from start and end point
+### Get destination point given distance (meters) from start and end point
 
 ```elixir
 Geocalc.destination_point([50.0663889, -5.7147222], [58.6438889, -3.07], 100_000)
 # => {:ok, [50.95412546615634, -5.488452905258299]}
 ```
 
-### Get destination point given distance and bearing from start point
+### Get destination point given distance (meters) and bearing from start point
 
 ```elixir
 Geocalc.destination_point([50.0663889, -5.7147222], 2.123, 100_000)
