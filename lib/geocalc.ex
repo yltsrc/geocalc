@@ -162,10 +162,26 @@ defmodule Geocalc do
       iex> Geocalc.bounding_box(berlin, radius)
       [[52.417520954378574, 13.277235453275123], [52.59756284562143, 13.573037346724874]]
   """
-
   @spec bounding_box(Point.t, number) :: list
   def bounding_box(point, radius_in_m) do
     GenServer.call(Calculator, {:bounding_box, point, radius_in_m})
+  end
+
+  @doc """
+  Compute the geographic center (aka geographic midpoint, center of gravity)
+  for an array of geocoded objects and/or [lat,lon] arrays (can be mixed).
+  Any objects missing coordinates are ignored. Follows the procedure
+  documented at http://www.geomidpoint.com/calculation.html.
+
+  ## Example
+      iex> point_1 = [0, 0]
+      iex> point_2 = [0, 3]
+      iex> Geocalc.geographic_center([point_1, point_2])
+      [0.0, 1.5]
+  """
+  @spec geographic_center(list) :: Point.t
+  def geographic_center(points) do
+    GenServer.call(Calculator, {:geographic_center, points})
   end
 
   @doc """

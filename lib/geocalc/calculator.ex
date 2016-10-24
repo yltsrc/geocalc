@@ -41,6 +41,10 @@ defmodule Geocalc.Calculator do
     {:reply, bounding_box(point, radius_in_m), state}
   end
 
+  def handle_call({:geographic_center, points}, _from, state) do
+    {:reply, geographic_center(points), state}
+  end
+
   @earth_radius 6_371_000
   @pi :math.pi
   @intersection_not_found "No intersection point found"
@@ -187,6 +191,25 @@ defmodule Geocalc.Calculator do
       [radians_to_degrees(lat_min), radians_to_degrees(lon_min)],
       [radians_to_degrees(lat_max), radians_to_degrees(lon_max)],
     ]
+  end
+
+  def geographic_center(points) do
+    [xa, ya, za] =
+      points
+      |> Enum.map(fn (point) -> [degrees_to_radians(Point.latitude(point)), degrees_to_radians(Point.longitude(point))] end)
+      |> Enum.reduce([[], [], []], fn (point, [x, y, z]) ->
+          x = [:math.cos(Point.latitude(point)) * :math.cos(Point.longitude(point)) | x]
+          y = [:math.cos(Point.latitude(point)) * :math.sin(Point.longitude(point)) | y]
+          z = [:math.sin(Point.latitude(point)) | z]
+          [x, y, z]
+        end)
+      |> Enum.map(fn (list) -> Enum.reduce(list, 0, fn (val, acc) -> acc + val end) / length(list) end)
+
+    lon = :math.atan2(ya, xa)
+    hyp = :math.sqrt(xa * xa + ya * ya)
+    lat = :math.atan2(za, hyp)
+
+    [radians_to_degrees(lat), radians_to_degrees(lon)]
   end
 
   # Semi-axes of WGS-84 geoidal reference
