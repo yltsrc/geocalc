@@ -102,4 +102,9 @@ defmodule GeocalcTest do
     radius = 10_000
     assert Geocalc.bounding_box(point, radius) == [[52.417520954378574, 13.277235453275123], [52.59756284562143, 13.573037346724874]]
   end
+
+  test "returns geographic center point" do
+    assert Geocalc.geographic_center([[0, 0], [0, 1]]) == [0.0, 0.5]
+    assert Geocalc.geographic_center([[0, 0], [0, 1], [0, 2]]) == [0.0, 1.0]
+  end
 end
