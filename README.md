@@ -69,17 +69,32 @@ Geocalc.bearing([50.0663889, -5.7147222], [58.6438889, -3.07])
 ### Get intersection point given start points and bearings
 
 ```elixir
+Geocalc.intersection_point([50.0663889, -5.7147222], 2.123, [55.0663889, -15.7147222], 2.123)
+# => {:ok, [48.04228582473962, -1.0347033632388496]}
+
+Geocalc.intersection_point([50.0663889, -5.7147222], 2.123, [50.0663889, -5.7147222], 2.123)
+# => {:error, "No intersection point found"}
+```
+
+### Get bounding box from a point and radius
+
+```elixir
 berlin = [52.5075419, 13.4251364]
 radius = 10_000
 Geocalc.bounding_box(berlin, radius)
 # => [[52.417520954378574, 13.277235453275123], [52.59756284562143, 13.573037346724874]]
 ```
 
-### Get bounding box from a point and radius
+### Get geographical center point
 
 ```elixir
-
+berlin = [52.5075419, 13.4251364]
+london = [51.5286416, -0.1015987]
+rome = [41.9102415, 12.3959161]
+Geocalc.geographic_center([berlin, london, rome])
+# => [48.810406537400254, 8.785092188535195]
 ```
+
 ### Convert degrees to radians
 
 ```elixir
