@@ -11,20 +11,7 @@ defmodule Geocalc do
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
   def start(_type, _args) do
-    import Supervisor.Spec, warn: false
-
-    # Define workers and child supervisors to be supervised
-    children = [
-      # Starts a worker by calling:
-      # Geocalc.Calculator.start_link()
-      worker(Calculator, []),
-    ]
-
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
-    # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Geocalc.Supervisor,
-            max_restarts: 1_000, max_seconds: 1]
-    Supervisor.start_link(children, opts)
+    Geocalc.Supervisor.start_link()
   end
 
   @doc """
@@ -50,7 +37,7 @@ defmodule Geocalc do
   """
   @spec distance_between(Point.t, Point.t) :: number
   def distance_between(point_1, point_2) do
-    GenServer.call(Calculator, {:distance_between, point_1, point_2})
+    GenServer.call(calc_pid, {:distance_between, point_1, point_2})
   end
 
   @doc """
@@ -73,11 +60,12 @@ defmodule Geocalc do
   """
   @spec bearing(Point.t, Point.t) :: number
   def bearing(point_1, point_2) do
-    GenServer.call(Calculator, {:bearing, point_1, point_2})
+    GenServer.call(calc_pid, {:bearing, point_1, point_2})
   end
 
   @doc """
-  Finds point between start and end points in direction to end point with given distance (in meters).
+  Finds point between start and end points in direction to end point
+  with given distance (in meters).
   Finds point from start point with given distance (in meters) and bearing.
   Return array with latitude and longitude.
 
@@ -114,7 +102,7 @@ defmodule Geocalc do
   @spec destination_point(Point.t, Point.t, number) :: tuple
   @spec destination_point(Point.t, number, number) :: tuple
   def destination_point(point_1, point_2, distance) do
-    GenServer.call(Calculator, {:destination_point, point_1, point_2, distance})
+    GenServer.call(calc_pid, {:destination_point, point_1, point_2, distance})
   end
 
   @doc """
@@ -148,7 +136,12 @@ defmodule Geocalc do
   @spec intersection_point(Point.t, number, Point.t, Point.t) :: tuple
   @spec intersection_point(Point.t, number, Point.t, number) :: tuple
   def intersection_point(point_1, bearing_1, point_2, bearing_2) do
-    GenServer.call(Calculator, {:intersection_point, point_1, bearing_1, point_2, bearing_2})
+    args = {:intersection_point, point_1, bearing_1, point_2, bearing_2}
+    try do
+      GenServer.call(calc_pid, args)
+    catch
+      :exit, _ -> {:error, "No intersection point found"}
+    end
   end
 
   @doc """
@@ -164,7 +157,7 @@ defmodule Geocalc do
   """
   @spec bounding_box(Point.t, number) :: list
   def bounding_box(point, radius_in_m) do
-    GenServer.call(Calculator, {:bounding_box, point, radius_in_m})
+    GenServer.call(calc_pid, {:bounding_box, point, radius_in_m})
   end
 
   @doc """
@@ -181,7 +174,7 @@ defmodule Geocalc do
   """
   @spec geographic_center(list) :: Point.t
   def geographic_center(points) do
-    GenServer.call(Calculator, {:geographic_center, points})
+    GenServer.call(calc_pid, {:geographic_center, points})
   end
 
   @doc """
@@ -198,7 +191,7 @@ defmodule Geocalc do
   """
   @spec radians_to_degrees(number) :: number
   def radians_to_degrees(radians) do
-    GenServer.call(Calculator, {:radians_to_degrees, radians})
+    GenServer.call(calc_pid, {:radians_to_degrees, radians})
   end
 
   @doc """
@@ -215,6 +208,12 @@ defmodule Geocalc do
   """
   @spec degrees_to_radians(number) :: number
   def degrees_to_radians(degrees) do
-    GenServer.call(Calculator, {:degrees_to_radians, degrees})
+    GenServer.call(calc_pid, {:degrees_to_radians, degrees})
+  end
+
+  defp calc_pid do
+    workers = Supervisor.which_children(Geocalc.Supervisor)
+    {Calculator, pid, :worker, _} = hd(workers)
+    pid
   end
 end

@@ -34,10 +34,10 @@ defmodule Geocalc.Mixfile do
   defp deps do
     [
       {:mix_test_watch, "~> 0.2.6", only: :dev},
-      {:ex_doc, "~> 0.12.0", only: :dev},
-      {:coverex, "~> 1.4.9", only: :test},
-      {:benchfella, "~> 0.3.0", only: :bench},
-      {:credo, ">= 0.4.5", only: :dev},
+      {:ex_doc, "~> 0.14.3", only: :dev},
+      {:coverex, "~> 1.4.10", only: :test},
+      {:benchfella, "~> 0.3.3", only: :bench},
+      {:credo, "~> 0.5.1", only: :dev},
     ]
   end
 
