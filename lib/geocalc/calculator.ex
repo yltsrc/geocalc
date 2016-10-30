@@ -6,11 +6,11 @@ defmodule Geocalc.Calculator do
   alias Geocalc.Point
 
   def start_link() do
-    GenServer.start_link(__MODULE__, [], name: __MODULE__)
+    GenServer.start_link(__MODULE__, :ok)
   end
 
-  def init([]) do
-    {:ok, []}
+  def init(:ok) do
+    {:ok, nil}
   end
 
   def handle_call({:distance_between, point_1, point_2}, _from, state) do
@@ -111,11 +111,11 @@ defmodule Geocalc.Calculator do
 
     diff_fo = fo_2 - fo_1
     diff_la = la_2 - la_1
-    be_12 = 2 * :math.asin(guard_one_minus_one(:math.sqrt(:math.sin(diff_fo / 2) * :math.sin(diff_fo / 2) + :math.cos(fo_1) * :math.cos(fo_2) * :math.sin(diff_la / 2) * :math.sin(diff_la / 2))))
+    be_12 = 2 * :math.asin(:math.sqrt(:math.sin(diff_fo / 2) * :math.sin(diff_fo / 2) + :math.cos(fo_1) * :math.cos(fo_2) * :math.sin(diff_la / 2) * :math.sin(diff_la / 2)))
     if be_12 == 0, do: throw @intersection_not_found
 
-    bo_1 = :math.acos(guard_one_minus_one((:math.sin(fo_2) - :math.sin(fo_1) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_1))))
-    bo_2 = :math.acos(guard_one_minus_one((:math.sin(fo_1) - :math.sin(fo_2) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_2))))
+    bo_1 = :math.acos((:math.sin(fo_2) - :math.sin(fo_1) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_1)))
+    bo_2 = :math.acos((:math.sin(fo_1) - :math.sin(fo_2) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_2)))
     {bo_12, bo_21} = if :math.sin(la_2 - la_1) > 0 do
       {bo_1, 2 * :math.pi - bo_2}
     else
@@ -126,19 +126,13 @@ defmodule Geocalc.Calculator do
     if :math.sin(a_1) == 0 && :math.sin(a_2) == 0, do: throw @intersection_not_found # infinite intersections
     if :math.sin(a_1) * :math.sin(a_2) < 0, do: throw @intersection_not_found # ambiguous intersection
 
-    a_3 = :math.acos(guard_one_minus_one(-:math.cos(a_1) * :math.cos(a_2) + :math.sin(a_1) * :math.sin(a_2) * :math.cos(be_12)))
+    a_3 = :math.acos(-:math.cos(a_1) * :math.cos(a_2) + :math.sin(a_1) * :math.sin(a_2) * :math.cos(be_12))
     be_13 = :math.atan2(:math.sin(be_12) * :math.sin(a_1) * :math.sin(a_2), :math.cos(a_2) + :math.cos(a_1) * :math.cos(a_3))
-    fo_3 = :math.asin(guard_one_minus_one(:math.sin(fo_1) * :math.cos(be_13) + :math.cos(fo_1) * :math.sin(be_13) * :math.cos(bo_13)))
+    fo_3 = :math.asin(:math.sin(fo_1) * :math.cos(be_13) + :math.cos(fo_1) * :math.sin(be_13) * :math.cos(bo_13))
     diff_la_13 = :math.atan2(:math.sin(bo_13) * :math.sin(be_13) * :math.cos(fo_1), :math.cos(be_13) - :math.sin(fo_1) * :math.sin(fo_3))
     la_3 = la_1 + diff_la_13
 
     {:ok, [radians_to_degrees(fo_3), radians_to_degrees(la_3)]}
-  end
-
-  defp guard_one_minus_one(int) do
-    if int > 1, do: throw @intersection_not_found
-    if int < -1, do: throw @intersection_not_found
-    int
   end
 
   defp rem_float(float_1, float_2) when float_1 < 0 do
@@ -176,7 +170,7 @@ defmodule Geocalc.Calculator do
     radians
   end
 
-  def bounding_box(point, radius_in_m) do
+  defp bounding_box(point, radius_in_m) do
     lat = degrees_to_radians(Point.latitude(point))
     lon = degrees_to_radians(Point.longitude(point))
     radius = earth_radius(lat)
@@ -193,7 +187,7 @@ defmodule Geocalc.Calculator do
     ]
   end
 
-  def geographic_center(points) do
+  defp geographic_center(points) do
     [xa, ya, za] =
       points
       |> Enum.map(fn (point) -> [degrees_to_radians(Point.latitude(point)), degrees_to_radians(Point.longitude(point))] end)
@@ -203,7 +197,7 @@ defmodule Geocalc.Calculator do
           z = [:math.sin(Point.latitude(point)) | z]
           [x, y, z]
         end)
-      |> Enum.map(fn (list) -> Enum.reduce(list, 0, fn (val, acc) -> acc + val end) / length(list) end)
+      |> Enum.map(fn (list) -> Enum.sum(list) / length(list) end)
 
     lon = :math.atan2(ya, xa)
     hyp = :math.sqrt(xa * xa + ya * ya)
@@ -213,8 +207,8 @@ defmodule Geocalc.Calculator do
   end
 
   # Semi-axes of WGS-84 geoidal reference
-  @wgsa 6378137.0  # Major semiaxis [m]
-  @wgsb 6356752.3  # Minor semiaxis [m]
+  @wgsa 6_378_137.0  # Major semiaxis [m]
+  @wgsb 6_356_752.3  # Minor semiaxis [m]
 
   defp earth_radius(lat) do
     # http://en.wikipedia.org/wiki/Earth_radius
@@ -222,6 +216,6 @@ defmodule Geocalc.Calculator do
     bn = @wgsb * @wgsb * :math.sin(lat)
     ad = @wgsa * :math.cos(lat)
     bd = @wgsb * :math.sin(lat)
-    :math.sqrt( (an*an + bn*bn)/(ad*ad + bd*bd) )
+    :math.sqrt((an * an + bn * bn) / (ad * ad + bd * bd))
   end
 end

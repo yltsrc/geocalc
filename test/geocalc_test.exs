@@ -81,7 +81,7 @@ defmodule GeocalcTest do
     assert msg == "No intersection point found"
   end
 
-  test "returns error message for two parallel destinations" do
+  test "crashes with ArithmeticError" do
     point_1 = %{lat: 30, lon: 0}
     point_2 = %{lat: 60, lon: 0}
     bearing = Geocalc.degrees_to_radians(90)
