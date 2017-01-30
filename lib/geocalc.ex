@@ -37,7 +37,7 @@ defmodule Geocalc do
   """
   @spec distance_between(Point.t, Point.t) :: number
   def distance_between(point_1, point_2) do
-    GenServer.call(calc_pid, {:distance_between, point_1, point_2})
+    GenServer.call(calc_pid(), {:distance_between, point_1, point_2})
   end
 
   @doc """
@@ -60,7 +60,7 @@ defmodule Geocalc do
   """
   @spec bearing(Point.t, Point.t) :: number
   def bearing(point_1, point_2) do
-    GenServer.call(calc_pid, {:bearing, point_1, point_2})
+    GenServer.call(calc_pid(), {:bearing, point_1, point_2})
   end
 
   @doc """
@@ -102,7 +102,7 @@ defmodule Geocalc do
   @spec destination_point(Point.t, Point.t, number) :: tuple
   @spec destination_point(Point.t, number, number) :: tuple
   def destination_point(point_1, point_2, distance) do
-    GenServer.call(calc_pid, {:destination_point, point_1, point_2, distance})
+    GenServer.call(calc_pid(), {:destination_point, point_1, point_2, distance})
   end
 
   @doc """
@@ -138,7 +138,7 @@ defmodule Geocalc do
   def intersection_point(point_1, bearing_1, point_2, bearing_2) do
     args = {:intersection_point, point_1, bearing_1, point_2, bearing_2}
     try do
-      GenServer.call(calc_pid, args)
+      GenServer.call(calc_pid(), args)
     catch
       :exit, _ -> {:error, "No intersection point found"}
     end
@@ -157,7 +157,7 @@ defmodule Geocalc do
   """
   @spec bounding_box(Point.t, number) :: list
   def bounding_box(point, radius_in_m) do
-    GenServer.call(calc_pid, {:bounding_box, point, radius_in_m})
+    GenServer.call(calc_pid(), {:bounding_box, point, radius_in_m})
   end
 
   @doc """
@@ -174,7 +174,7 @@ defmodule Geocalc do
   """
   @spec geographic_center(list) :: Point.t
   def geographic_center(points) do
-    GenServer.call(calc_pid, {:geographic_center, points})
+    GenServer.call(calc_pid(), {:geographic_center, points})
   end
 
   @doc """
@@ -191,7 +191,7 @@ defmodule Geocalc do
   """
   @spec radians_to_degrees(number) :: number
   def radians_to_degrees(radians) do
-    GenServer.call(calc_pid, {:radians_to_degrees, radians})
+    GenServer.call(calc_pid(), {:radians_to_degrees, radians})
   end
 
   @doc """
@@ -208,7 +208,7 @@ defmodule Geocalc do
   """
   @spec degrees_to_radians(number) :: number
   def degrees_to_radians(degrees) do
-    GenServer.call(calc_pid, {:degrees_to_radians, degrees})
+    GenServer.call(calc_pid(), {:degrees_to_radians, degrees})
   end
 
   defp calc_pid do
