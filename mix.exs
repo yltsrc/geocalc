@@ -9,10 +9,10 @@ defmodule Geocalc.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      source_url: "https://github.com/yltsrc/geocalc",
-     description: description,
+     description: description(),
      test_coverage: [tool: Coverex.Task],
-     package: package,
-     deps: deps]
+     package: package(),
+     deps: deps()]
   end
 
   # Configuration for the OTP application
