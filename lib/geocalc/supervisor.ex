@@ -3,7 +3,7 @@ defmodule Geocalc.Supervisor do
 
   alias Geocalc.Calculator
 
-  def start_link() do
+  def start_link do
     Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
