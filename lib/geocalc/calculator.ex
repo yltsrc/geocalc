@@ -5,7 +5,7 @@ defmodule Geocalc.Calculator do
 
   alias Geocalc.Point
 
-  def start_link() do
+  def start_link do
     GenServer.start_link(__MODULE__, :ok)
   end
 
@@ -82,11 +82,9 @@ defmodule Geocalc.Calculator do
   end
 
   defp intersection_point(point_1, bearing_1, point_2, bearing_2) when is_number(bearing_1) and is_number(bearing_2) do
-    try do
-      intersection_point!(point_1, bearing_1, point_2, bearing_2)
-    catch
-      message -> {:error, message}
-    end
+    intersection_point!(point_1, bearing_1, point_2, bearing_2)
+  catch
+    message -> {:error, message}
   end
   defp intersection_point(point_1, bearing_1, point_3, point_4) when is_number(bearing_1) do
     brng_3 = bearing(point_3, point_4)
@@ -176,10 +174,10 @@ defmodule Geocalc.Calculator do
     radius = earth_radius(lat)
     pradius = radius * :math.cos(lat)
 
-    lat_min = lat - radius_in_m/radius
-    lat_max = lat + radius_in_m/radius
-    lon_min = lon - radius_in_m/pradius
-    lon_max = lon + radius_in_m/pradius
+    lat_min = lat - radius_in_m / radius
+    lat_max = lat + radius_in_m / radius
+    lon_min = lon - radius_in_m / pradius
+    lon_max = lon + radius_in_m / pradius
 
     [
       [radians_to_degrees(lat_min), radians_to_degrees(lon_min)],
