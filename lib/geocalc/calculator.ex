@@ -45,18 +45,30 @@ defmodule Geocalc.Calculator do
     {:reply, geographic_center(points), state}
   end
 
+  def handle_call({:max_latitude, point, bearing}, _from, state) do
+    {:reply, max_latitude(point, bearing), state}
+  end
+
+  def handle_call({:cross_track_distance_to, point, path_start_point, path_end_point}, _from, state) do
+    {:reply, cross_track_distance_to(point, path_start_point, path_end_point), state}
+  end
+
+  def handle_call({:crossing_parallels, point_1, path_2, latitude}, _from, state) do
+    {:reply, crossing_parallels(point_1, path_2, latitude), state}
+  end
+
   @earth_radius 6_371_000
   @pi :math.pi
   @intersection_not_found "No intersection point found"
 
-  defp distance_between(point_1, point_2) do
+  defp distance_between(point_1, point_2, radius \\ @earth_radius) do
     fo_1 = degrees_to_radians(Point.latitude(point_1))
     fo_2 = degrees_to_radians(Point.latitude(point_2))
     diff_fo = degrees_to_radians(Point.latitude(point_2) - Point.latitude(point_1))
     diff_la = degrees_to_radians(Point.longitude(point_2) - Point.longitude(point_1))
     a = :math.sin(diff_fo / 2) * :math.sin(diff_fo / 2) + :math.cos(fo_1) * :math.cos(fo_2) * :math.sin(diff_la / 2) * :math.sin(diff_la / 2)
     c = 2 * :math.atan2(:math.sqrt(a), :math.sqrt(1 - a))
-    @earth_radius * c
+    radius * c
   end
 
   defp bearing(point_1, point_2) do
@@ -69,16 +81,19 @@ defmodule Geocalc.Calculator do
     :math.atan2(y, x)
   end
 
-  defp destination_point(point_1, brng, distance) when is_number(brng)  do
+  defp destination_point(point_1, brng, distance) do
+    destination_point(point_1, brng, distance, @earth_radius)
+  end
+  defp destination_point(point_1, brng, distance, radius) when is_number(brng)  do
     fo_1 = degrees_to_radians(Point.latitude(point_1))
     la_1 = degrees_to_radians(Point.longitude(point_1))
-    rad_lat = :math.asin(:math.sin(fo_1) * :math.cos(distance / @earth_radius) + :math.cos(fo_1) * :math.sin(distance / @earth_radius) * :math.cos(brng))
-    rad_lng = la_1 + :math.atan2(:math.sin(brng) * :math.sin(distance / @earth_radius) * :math.cos(fo_1), :math.cos(distance / @earth_radius) - :math.sin(fo_1) * :math.sin(rad_lat))
+    rad_lat = :math.asin(:math.sin(fo_1) * :math.cos(distance / radius) + :math.cos(fo_1) * :math.sin(distance / radius) * :math.cos(brng))
+    rad_lng = la_1 + :math.atan2(:math.sin(brng) * :math.sin(distance / radius) * :math.cos(fo_1), :math.cos(distance / radius) - :math.sin(fo_1) * :math.sin(rad_lat))
     {:ok, [radians_to_degrees(rad_lat), radians_to_degrees(rad_lng)]}
   end
-  defp destination_point(point_1, point_2, distance) do
+  defp destination_point(point_1, point_2, distance, radius) do
     brng = bearing(point_1, point_2)
-    destination_point(point_1, brng, distance)
+    destination_point(point_1, brng, distance, radius)
   end
 
   defp intersection_point(point_1, bearing_1, point_2, bearing_2) when is_number(bearing_1) and is_number(bearing_2) do
@@ -185,6 +200,19 @@ defmodule Geocalc.Calculator do
     ]
   end
 
+  # Semi-axes of WGS-84 geoidal reference
+  @wgsa 6_378_137.0  # Major semiaxis [m]
+  @wgsb 6_356_752.3  # Minor semiaxis [m]
+
+  defp earth_radius(lat) do
+    # http://en.wikipedia.org/wiki/Earth_radius
+    an = @wgsa * @wgsa * :math.cos(lat)
+    bn = @wgsb * @wgsb * :math.sin(lat)
+    ad = @wgsa * :math.cos(lat)
+    bd = @wgsb * :math.sin(lat)
+    :math.sqrt((an * an + bn * bn) / (ad * ad + bd * bd))
+  end
+
   defp geographic_center(points) do
     [xa, ya, za] =
       points
@@ -204,16 +232,42 @@ defmodule Geocalc.Calculator do
     [radians_to_degrees(lat), radians_to_degrees(lon)]
   end
 
-  # Semi-axes of WGS-84 geoidal reference
-  @wgsa 6_378_137.0  # Major semiaxis [m]
-  @wgsb 6_356_752.3  # Minor semiaxis [m]
+  defp max_latitude(point, bearing) do
+    lat = degrees_to_radians(Point.latitude(point))
+    max_lat = :math.acos(Kernel.abs(:math.sin(bearing) * :math.cos(lat)))
+    radians_to_degrees(max_lat)
+  end
 
-  defp earth_radius(lat) do
-    # http://en.wikipedia.org/wiki/Earth_radius
-    an = @wgsa * @wgsa * :math.cos(lat)
-    bn = @wgsb * @wgsb * :math.sin(lat)
-    ad = @wgsa * :math.cos(lat)
-    bd = @wgsb * :math.sin(lat)
-    :math.sqrt((an * an + bn * bn) / (ad * ad + bd * bd))
+  defp cross_track_distance_to(point, path_start_point, path_end_point, radius \\ @earth_radius) do
+    dist_13 = distance_between(path_start_point, point, radius) / radius
+    be_13 = bearing(path_start_point, point)
+    be_12 = bearing(path_start_point, path_end_point)
+    :math.asin(:math.sin(dist_13) * :math.sin(be_13 - be_12)) * radius
+  end
+
+  defp crossing_parallels(point_1, point_2, latitude) do
+    lat = degrees_to_radians(latitude)
+
+    lat_1 = degrees_to_radians(Point.latitude(point_1))
+    lon_1 = degrees_to_radians(Point.longitude(point_1))
+    lat_2 = degrees_to_radians(Point.latitude(point_2))
+    lon_2 = degrees_to_radians(Point.longitude(point_2))
+
+    diff_lon = lon_2 - lon_1
+
+    x = :math.sin(lat_1) * :math.cos(lat_2) * :math.cos(lat) * :math.sin(diff_lon)
+    y = :math.sin(lat_1) * :math.cos(lat_2) * :math.cos(lat) * :math.cos(diff_lon) - :math.cos(lat_1) * :math.sin(lat_2) * :math.cos(lat)
+    z = :math.cos(lat_1) * :math.cos(lat_2) * :math.sin(lat) * :math.sin(diff_lon)
+
+    if z * z > x * x + y * y do
+      {:error, "Not found"}
+    else
+      lon_max = :math.atan2(-y, x)
+      diff_lon_i = :math.acos(z / :math.sqrt(x * x + y * y))
+      lon_i_1 = lon_1 + lon_max - diff_lon_i
+      lon_i_2 = lon_1 + lon_max + diff_lon_i
+
+      {:ok, rem_float((radians_to_degrees(lon_i_1) + 540), 360) - 180, rem_float((radians_to_degrees(lon_i_2) + 540), 360) - 180}
+    end
   end
 end
