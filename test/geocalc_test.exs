@@ -107,4 +107,32 @@ defmodule GeocalcTest do
     assert Geocalc.geographic_center([[0, 0], [0, 1]]) == [0.0, 0.5]
     assert Geocalc.geographic_center([[0, 0], [0, 1], [0, 2]]) == [0.0, 1.0]
   end
+
+  test "returns max latitude" do
+    bearing_1 = Geocalc.degrees_to_radians(0)
+    bearing_2 = Geocalc.degrees_to_radians(90)
+    assert Geocalc.max_latitude([0, 0], bearing_1) == 90.0
+    assert Geocalc.max_latitude([0, 0], bearing_2) == 0.0
+  end
+
+  test "returns cross track distance to point" do
+    point_1 = %{lat: 46.118942, lng: 150.402832}
+    point_2 = %{lat: 21.913108, lng: -160.193712}
+    point_3 = %{lat: 52.417520954378574, lng: 13.277235453275123}
+    assert Geocalc.cross_track_distance_to(point_1, point_2, point_3) == -3_794_248.870228449
+  end
+
+  test "returns crossing parallels" do
+    point_1 = %{lat: 46.1189424, lng: 150.402832}
+    point_2 = %{lat: 21.9131082, lng: -160.1937128}
+    latitude = 45.0
+    assert Geocalc.crossing_parallels(point_1, point_2, latitude) == {:ok, 106.52361930066911, 155.95500236778844}
+  end
+
+  test "returns error message if no crossing parallels found" do
+    point_1 = %{lat: 0, lng: 0}
+    point_2 = %{lat: 180, lng: 90}
+    latitude = 45.0
+    assert Geocalc.crossing_parallels(point_1, point_2, latitude) == {:error, "Not found"}
+  end
 end

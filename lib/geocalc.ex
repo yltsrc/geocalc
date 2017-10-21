@@ -211,6 +211,70 @@ defmodule Geocalc do
     GenServer.call(calc_pid(), {:degrees_to_radians, degrees})
   end
 
+  @doc """
+  Returns maximum latitude reached when travelling on a great circle on given
+  bearing from the point (Clairaut's formula). Negate the result for the
+  minimum latitude (in the Southern hemisphere).
+  The maximum latitude is independent of longitude; it will be the same for all
+  points on a given latitude.
+  Return radians.
+
+  ## Example
+      iex> berlin = [52.5075419, 13.4251364]
+      iex> paris = [48.8588589, 2.3475569]
+      iex> bearing = Geocalc.bearing(berlin, paris)
+      iex> Geocalc.max_latitude(berlin, bearing)
+      55.953467429882835
+  """
+  @spec max_latitude(Point.t, number) :: number
+  def max_latitude(point, bearing) do
+    GenServer.call(calc_pid(), {:max_latitude, point, bearing})
+  end
+
+  @doc """
+  Compute distance from the point to great circle defined by start-point
+  and end-point.
+  Return distance in meters.
+
+  ## Example
+      iex> berlin = [52.5075419, 13.4251364]
+      iex> london = [51.5286416, -0.1015987]
+      iex> paris = [48.8588589, 2.3475569]
+      iex> Geocalc.cross_track_distance_to(berlin, london, paris)
+      -877680.2992295175
+  """
+  @spec cross_track_distance_to(Point.t, Point.t, Point.t) :: number
+  def cross_track_distance_to(point, path_start_point, path_end_point) do
+    GenServer.call(calc_pid(), {:cross_track_distance_to, point, path_start_point, path_end_point})
+  end
+
+  @doc """
+  Returns the pair of meridians at which a great circle defined by two points
+  crosses the given latitude.
+  Return longitudes.
+
+  ## Example
+      iex> berlin = [52.5075419, 13.4251364]
+      iex> paris = [48.8588589, 2.3475569]
+      iex> Geocalc.crossing_parallels(berlin, paris, 12.3456)
+      {:ok, 123.179463369946, -39.81144878508576}
+
+  ## Example
+      iex> point_1 = %{lat: 0, lng: 0}
+      iex> point_2 = %{lat: -180, lng: -90}
+      iex> latitude = 45.0
+      iex> Geocalc.crossing_parallels(point_1, point_2, latitude)
+      {:error, "Not found"}
+  """
+  @spec crossing_parallels(Point.t, Point.t, number) :: number
+  def crossing_parallels(point_1, path_2, latitude) do
+    GenServer.call(calc_pid(), {:crossing_parallels, point_1, path_2, latitude})
+  end
+
+  defp workers_count do
+    Application.get_env(:geocalc, :workers_count) || 1
+  end
+
   defp calc_pid do
     workers = Supervisor.which_children(Geocalc.Supervisor)
     {Calculator, pid, :worker, _} = hd(workers)
