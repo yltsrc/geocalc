@@ -1,67 +1,13 @@
 defmodule Geocalc.Calculator do
   @moduledoc ""
 
-  use GenServer
-
   alias Geocalc.Point
-
-  def start_link do
-    GenServer.start_link(__MODULE__, :ok)
-  end
-
-  def init(:ok) do
-    {:ok, nil}
-  end
-
-  def handle_call({:distance_between, point_1, point_2}, _from, state) do
-    {:reply, distance_between(point_1, point_2), state}
-  end
-
-  def handle_call({:bearing, point_1, point_2}, _from, state) do
-    {:reply, bearing(point_1, point_2), state}
-  end
-
-  def handle_call({:destination_point, point_1, point_2, distance}, _from, state) do
-    {:reply, destination_point(point_1, point_2, distance), state}
-  end
-
-  def handle_call({:intersection_point, point_1, bearing_1, point_2, bearing_2}, _from, state) do
-    {:reply, intersection_point(point_1, bearing_1, point_2, bearing_2), state}
-  end
-
-  def handle_call({:degrees_to_radians, degrees}, _from, state) do
-    {:reply, degrees_to_radians(degrees), state}
-  end
-
-  def handle_call({:radians_to_degrees, radians}, _from, state) do
-    {:reply, radians_to_degrees(radians), state}
-  end
-
-  def handle_call({:bounding_box, point, radius_in_m}, _from, state) do
-    {:reply, bounding_box(point, radius_in_m), state}
-  end
-
-  def handle_call({:geographic_center, points}, _from, state) do
-    {:reply, geographic_center(points), state}
-  end
-
-  def handle_call({:max_latitude, point, bearing}, _from, state) do
-    {:reply, max_latitude(point, bearing), state}
-  end
-
-  def handle_call({:cross_track_distance_to, point, path_start_point, path_end_point}, _from, state) do
-    {:reply, cross_track_distance_to(point, path_start_point, path_end_point), state}
-  end
-
-  def handle_call({:crossing_parallels, point_1, path_2, latitude}, _from, state) do
-    {:reply, crossing_parallels(point_1, path_2, latitude), state}
-  end
 
   @earth_radius 6_371_000
   @pi :math.pi
   @intersection_not_found "No intersection point found"
 
-  defp distance_between(point_1, point_2, radius \\ @earth_radius) do
+  def distance_between(point_1, point_2, radius \\ @earth_radius) do
     fo_1 = degrees_to_radians(Point.latitude(point_1))
     fo_2 = degrees_to_radians(Point.latitude(point_2))
     diff_fo = degrees_to_radians(Point.latitude(point_2) - Point.latitude(point_1))
@@ -71,7 +17,7 @@ defmodule Geocalc.Calculator do
     radius * c
   end
 
-  defp bearing(point_1, point_2) do
+  def bearing(point_1, point_2) do
     fo_1 = degrees_to_radians(Point.latitude(point_1))
     fo_2 = degrees_to_radians(Point.latitude(point_2))
     la_1 = degrees_to_radians(Point.longitude(point_1))
@@ -81,7 +27,7 @@ defmodule Geocalc.Calculator do
     :math.atan2(y, x)
   end
 
-  defp destination_point(point_1, brng, distance) do
+  def destination_point(point_1, brng, distance) do
     destination_point(point_1, brng, distance, @earth_radius)
   end
   defp destination_point(point_1, brng, distance, radius) when is_number(brng)  do
@@ -96,20 +42,20 @@ defmodule Geocalc.Calculator do
     destination_point(point_1, brng, distance, radius)
   end
 
-  defp intersection_point(point_1, bearing_1, point_2, bearing_2) when is_number(bearing_1) and is_number(bearing_2) do
+  def intersection_point(point_1, bearing_1, point_2, bearing_2) when is_number(bearing_1) and is_number(bearing_2) do
     intersection_point!(point_1, bearing_1, point_2, bearing_2)
   catch
     message -> {:error, message}
   end
-  defp intersection_point(point_1, bearing_1, point_3, point_4) when is_number(bearing_1) do
+  def intersection_point(point_1, bearing_1, point_3, point_4) when is_number(bearing_1) do
     brng_3 = bearing(point_3, point_4)
     intersection_point(point_1, bearing_1, point_3, brng_3)
   end
-  defp intersection_point(point_1, point_2, point_3, bearing_2) when is_number(bearing_2) do
+  def intersection_point(point_1, point_2, point_3, bearing_2) when is_number(bearing_2) do
     brng_1 = bearing(point_1, point_2)
     intersection_point(point_1, brng_1, point_3, bearing_2)
   end
-  defp intersection_point(point_1, point_2, point_3, point_4) do
+  def intersection_point(point_1, point_2, point_3, point_4) do
     brng_1 = bearing(point_1, point_2)
     brng_3 = bearing(point_3, point_4)
     intersection_point(point_1, brng_1, point_3, brng_3)
@@ -155,7 +101,7 @@ defmodule Geocalc.Calculator do
     float_1 - (Float.floor(float_1 / float_2) * float_2)
   end
 
-  defp degrees_to_radians(degrees) do
+  def degrees_to_radians(degrees) do
     normalize_degrees(degrees) * :math.pi / 180
   end
 
@@ -169,7 +115,7 @@ defmodule Geocalc.Calculator do
     degrees
   end
 
-  defp radians_to_degrees(radians) do
+  def radians_to_degrees(radians) do
     normalize_radians(radians) * 180 / :math.pi
   end
 
@@ -183,7 +129,7 @@ defmodule Geocalc.Calculator do
     radians
   end
 
-  defp bounding_box(point, radius_in_m) do
+  def bounding_box(point, radius_in_m) do
     lat = degrees_to_radians(Point.latitude(point))
     lon = degrees_to_radians(Point.longitude(point))
     radius = earth_radius(lat)
@@ -213,7 +159,7 @@ defmodule Geocalc.Calculator do
     :math.sqrt((an * an + bn * bn) / (ad * ad + bd * bd))
   end
 
-  defp geographic_center(points) do
+  def geographic_center(points) do
     [xa, ya, za] =
       points
       |> Enum.map(fn (point) -> [degrees_to_radians(Point.latitude(point)), degrees_to_radians(Point.longitude(point))] end)
@@ -232,20 +178,20 @@ defmodule Geocalc.Calculator do
     [radians_to_degrees(lat), radians_to_degrees(lon)]
   end
 
-  defp max_latitude(point, bearing) do
+  def max_latitude(point, bearing) do
     lat = degrees_to_radians(Point.latitude(point))
     max_lat = :math.acos(Kernel.abs(:math.sin(bearing) * :math.cos(lat)))
     radians_to_degrees(max_lat)
   end
 
-  defp cross_track_distance_to(point, path_start_point, path_end_point, radius \\ @earth_radius) do
+  def cross_track_distance_to(point, path_start_point, path_end_point, radius \\ @earth_radius) do
     dist_13 = distance_between(path_start_point, point, radius) / radius
     be_13 = bearing(path_start_point, point)
     be_12 = bearing(path_start_point, path_end_point)
     :math.asin(:math.sin(dist_13) * :math.sin(be_13 - be_12)) * radius
   end
 
-  defp crossing_parallels(point_1, point_2, latitude) do
+  def crossing_parallels(point_1, point_2, latitude) do
     lat = degrees_to_radians(latitude)
 
     lat_1 = degrees_to_radians(Point.latitude(point_1))

@@ -20,19 +20,10 @@ def deps do
 end
 ```
 
-Then, update your dependencies:
+And then fetch your dependencies:
 
 ```sh-session
 $ mix deps.get
-```
-
-Now, list the `:geocalc` application as your
-application dependency:
-
-```elixir
-def application do
-  [applications: [:geocalc]]
-end
 ```
 
 
@@ -93,6 +84,35 @@ london = [51.5286416, -0.1015987]
 rome = [41.9102415, 12.3959161]
 Geocalc.geographic_center([berlin, london, rome])
 # => [48.810406537400254, 8.785092188535195]
+```
+
+### Get maximum latitude reached when travelling on a great circle on given bearing from the point
+
+```elixir
+berlin = [52.5075419, 13.4251364]
+paris = [48.8588589, 2.3475569]
+bearing = Geocalc.bearing(berlin, paris)
+Geocalc.max_latitude(berlin, bearing)
+# => 55.953467429882835
+```
+
+### Get distance from the point to great circle defined by start-point and end-point
+
+```elixir
+berlin = [52.5075419, 13.4251364]
+london = [51.5286416, -0.1015987]
+paris = [48.8588589, 2.3475569]
+Geocalc.cross_track_distance_to(berlin, london, paris)
+# => -877680.2992295175
+```
+
+### Get the pair of meridians at which a great circle defined by two points crosses the given latitude
+
+```elixir
+berlin = [52.5075419, 13.4251364]
+paris = [48.8588589, 2.3475569]
+Geocalc.crossing_parallels(berlin, paris, 12.3456)
+# => {:ok, 123.179463369946, -39.81144878508576}
 ```
 
 ### Convert degrees to radians
