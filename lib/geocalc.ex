@@ -3,16 +3,8 @@ defmodule Geocalc do
   Calculate distance, bearing and more between Latitude/Longitude points.
   """
 
-  use Application
-
   alias Geocalc.Point
   alias Geocalc.Calculator
-
-  # See http://elixir-lang.org/docs/stable/elixir/Application.html
-  # for more information on OTP Applications
-  def start(_type, _args) do
-    Geocalc.Supervisor.start_link()
-  end
 
   @doc """
   Calculates distance between 2 points.
@@ -37,7 +29,7 @@ defmodule Geocalc do
   """
   @spec distance_between(Point.t, Point.t) :: number
   def distance_between(point_1, point_2) do
-    GenServer.call(calc_pid(), {:distance_between, point_1, point_2})
+    Calculator.distance_between(point_1, point_2)
   end
 
   @doc """
@@ -60,7 +52,7 @@ defmodule Geocalc do
   """
   @spec bearing(Point.t, Point.t) :: number
   def bearing(point_1, point_2) do
-    GenServer.call(calc_pid(), {:bearing, point_1, point_2})
+    Calculator.bearing(point_1, point_2)
   end
 
   @doc """
@@ -102,7 +94,7 @@ defmodule Geocalc do
   @spec destination_point(Point.t, Point.t, number) :: tuple
   @spec destination_point(Point.t, number, number) :: tuple
   def destination_point(point_1, point_2, distance) do
-    GenServer.call(calc_pid(), {:destination_point, point_1, point_2, distance})
+    Calculator.destination_point(point_1, point_2, distance)
   end
 
   @doc """
@@ -136,12 +128,9 @@ defmodule Geocalc do
   @spec intersection_point(Point.t, number, Point.t, Point.t) :: tuple
   @spec intersection_point(Point.t, number, Point.t, number) :: tuple
   def intersection_point(point_1, bearing_1, point_2, bearing_2) do
-    args = {:intersection_point, point_1, bearing_1, point_2, bearing_2}
-    try do
-      GenServer.call(calc_pid(), args)
-    catch
-      :exit, _ -> {:error, "No intersection point found"}
-    end
+    Calculator.intersection_point(point_1, bearing_1, point_2, bearing_2)
+  rescue
+    e in ArithmeticError -> {:error, "No intersection point found"}
   end
 
   @doc """
@@ -157,7 +146,7 @@ defmodule Geocalc do
   """
   @spec bounding_box(Point.t, number) :: list
   def bounding_box(point, radius_in_m) do
-    GenServer.call(calc_pid(), {:bounding_box, point, radius_in_m})
+    Calculator.bounding_box(point, radius_in_m)
   end
 
   @doc """
@@ -174,7 +163,7 @@ defmodule Geocalc do
   """
   @spec geographic_center(list) :: Point.t
   def geographic_center(points) do
-    GenServer.call(calc_pid(), {:geographic_center, points})
+    Calculator.geographic_center(points)
   end
 
   @doc """
@@ -191,7 +180,7 @@ defmodule Geocalc do
   """
   @spec radians_to_degrees(number) :: number
   def radians_to_degrees(radians) do
-    GenServer.call(calc_pid(), {:radians_to_degrees, radians})
+    Calculator.radians_to_degrees(radians)
   end
 
   @doc """
@@ -208,7 +197,7 @@ defmodule Geocalc do
   """
   @spec degrees_to_radians(number) :: number
   def degrees_to_radians(degrees) do
-    GenServer.call(calc_pid(), {:degrees_to_radians, degrees})
+    Calculator.degrees_to_radians(degrees)
   end
 
   @doc """
@@ -228,7 +217,7 @@ defmodule Geocalc do
   """
   @spec max_latitude(Point.t, number) :: number
   def max_latitude(point, bearing) do
-    GenServer.call(calc_pid(), {:max_latitude, point, bearing})
+    Calculator.max_latitude(point, bearing)
   end
 
   @doc """
@@ -245,7 +234,7 @@ defmodule Geocalc do
   """
   @spec cross_track_distance_to(Point.t, Point.t, Point.t) :: number
   def cross_track_distance_to(point, path_start_point, path_end_point) do
-    GenServer.call(calc_pid(), {:cross_track_distance_to, point, path_start_point, path_end_point})
+    Calculator.cross_track_distance_to(point, path_start_point, path_end_point)
   end
 
   @doc """
@@ -268,16 +257,6 @@ defmodule Geocalc do
   """
   @spec crossing_parallels(Point.t, Point.t, number) :: number
   def crossing_parallels(point_1, path_2, latitude) do
-    GenServer.call(calc_pid(), {:crossing_parallels, point_1, path_2, latitude})
-  end
-
-  defp workers_count do
-    Application.get_env(:geocalc, :workers_count) || 1
-  end
-
-  defp calc_pid do
-    workers = Supervisor.which_children(Geocalc.Supervisor)
-    {Calculator, pid, :worker, _} = hd(workers)
-    pid
+    Calculator.crossing_parallels(point_1, path_2, latitude)
   end
 end
