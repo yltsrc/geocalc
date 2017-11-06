@@ -130,7 +130,7 @@ defmodule Geocalc do
   def intersection_point(point_1, bearing_1, point_2, bearing_2) do
     Calculator.intersection_point(point_1, bearing_1, point_2, bearing_2)
   rescue
-    e in ArithmeticError -> {:error, "No intersection point found"}
+    ArithmeticError -> {:error, "No intersection point found"}
   end
 
   @doc """
