@@ -8,6 +8,35 @@ defmodule GeocalcTest do
     assert_in_delta Geocalc.distance_between(point_1, point_2), 968_853.5, 0.05
   end
 
+  test "returns true when point is within a given radius from the circle center" do
+    center = [18.2208, 66.5901]
+    point = [18.4655, 66.1057]
+    assert Geocalc.within?(170_000, center, point)
+  end
+
+  test "returns true when radius is 0 and the point equals the center point" do
+    center = [18.2208, 66.5901]
+    assert Geocalc.within?(0, center, center)
+  end
+
+  test "returns false when radius is 0 and point does not equal center point" do
+    center = [18.2208, 66.5901]
+    point = [18.4655, 66.1057]
+    refute Geocalc.within?(0, center, point)
+  end
+
+  test "returns false when point is not wihtin a given radius from the circle center" do
+    center = [18.2208, 66.5901]
+    point = [52.5075419, 13.4251364]
+    refute Geocalc.within?(170_000, center, point)
+  end
+
+  test "returns false when radius is negative" do
+    center = [18.2208, 66.5901]
+    point = [52.5075419, 13.4251364]
+    refute Geocalc.within?(-170_000, center, point)
+  end
+
   test "calculates distance between Minsk and London" do
     minsk = %{lat: 53.8838884, lon: 27.5949741}
     london = %{lat: 51.5286416, lon: -0.1015987}

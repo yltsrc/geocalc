@@ -36,6 +36,15 @@ Geocalc.distance_between([50.0663889, -5.7147222], [58.6438889, -3.07])
 # => 968853.5464535094
 ```
 
+### Calculate if point is inside a circle given by a center point and a radius (in meters)
+
+```elixir
+san_juan = [18.4655, 66.1057]
+puerto_rico = [18.2208, 66.5901]
+Geocalc.within?(san_juan, puerto_rico, 170_000)
+# => true
+```
+
 ### Get destination point given distance (meters) from start and end point
 
 ```elixir
