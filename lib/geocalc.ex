@@ -33,6 +33,30 @@ defmodule Geocalc do
   end
 
   @doc """
+  Calculates if a point is within radius of
+  the center of a circle. Return boolean.
+
+  ## Example
+      iex> berlin = [52.5075419, 13.4251364]
+      iex> paris = [48.8588589, 2.3475569]
+      iex> Geocalc.within?(10, paris, berlin)
+      false
+      iex> Geocalc.within?(10, berlin, paris)
+      false
+
+  ## Example
+      iex> san_juan = %{lat: 18.4655, lon: 66.1057}
+      iex> puerto_rico = %{lat: 18.2208, lng: 66.5901}
+      iex> Geocalc.within?(170_000, puerto_rico, san_juan)
+      true
+  """
+  @spec within?(number, Point.t, Point.t) :: boolean()
+  def within?(radius, _center, _point) when radius < 0, do: false
+  def within?(radius, center, point) do
+    Calculator.distance_between(center, point) <= radius
+  end
+
+  @doc """
   Calculates bearing.
   Return radians.
 
