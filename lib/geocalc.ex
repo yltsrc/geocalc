@@ -3,8 +3,8 @@ defmodule Geocalc do
   Calculate distance, bearing and more between Latitude/Longitude points.
   """
 
-  alias Geocalc.Point
   alias Geocalc.Calculator
+  alias Geocalc.Point
 
   @doc """
   Calculates distance between 2 points.
