@@ -1,5 +1,5 @@
 defmodule Geocalc.Calculator do
-  @moduledoc ""
+  @moduledoc false
 
   alias Geocalc.Point
 
