@@ -26,6 +26,7 @@ defimpl Geocalc.Point, for: Map do
   def latitude(%{lat: val}) when is_number(val) do
     val
   end
+
   def latitude(%{latitude: val}) when is_number(val) do
     val
   end
@@ -33,9 +34,11 @@ defimpl Geocalc.Point, for: Map do
   def longitude(%{lon: val}) when is_number(val) do
     val
   end
+
   def longitude(%{lng: val}) when is_number(val) do
     val
   end
+
   def longitude(%{longitude: val}) when is_number(val) do
     val
   end
@@ -45,6 +48,7 @@ defimpl Geocalc.Point, for: Tuple do
   def latitude({lat, _lng}) when is_number(lat) do
     lat
   end
+
   def latitude({:ok, lat, _lng}) when is_number(lat) do
     lat
   end
@@ -52,6 +56,7 @@ defimpl Geocalc.Point, for: Tuple do
   def longitude({_lat, lng}) when is_number(lng) do
     lng
   end
+
   def longitude({:ok, _lat, lng}) when is_number(lng) do
     lng
   end

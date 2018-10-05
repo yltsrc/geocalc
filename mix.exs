@@ -2,17 +2,19 @@ defmodule Geocalc.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :geocalc,
-     name: "Geocalc",
-     version: "0.6.1",
-     elixir: "~> 1.0",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     source_url: "https://github.com/yltsrc/geocalc",
-     description: description(),
-     test_coverage: [tool: Coverex.Task],
-     package: package(),
-     deps: deps()]
+    [
+      app: :geocalc,
+      name: "Geocalc",
+      version: "0.6.1",
+      elixir: "~> 1.0",
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
+      source_url: "https://github.com/yltsrc/geocalc",
+      description: description(),
+      test_coverage: [tool: Coverex.Task],
+      package: package(),
+      deps: deps()
+    ]
   end
 
   # Configuration for the OTP application
@@ -37,7 +39,7 @@ defmodule Geocalc.Mixfile do
       {:coverex, "~> 1.5.0", only: :test},
       {:credo, "~> 0.10.2", only: :dev},
       {:ex_doc, "~> 0.19.1", only: :dev},
-      {:mix_test_watch, "~> 0.9.0", only: :dev},
+      {:mix_test_watch, "~> 0.9.0", only: :dev}
     ]
   end
 
@@ -48,10 +50,14 @@ defmodule Geocalc.Mixfile do
   end
 
   defp package do
-    [files: ["lib", "priv", "mix.exs", "README*", "LICENSE*"],
-     maintainers: ["Yura Tolstik"],
-     licenses: ["MIT"],
-     links: %{"GitHub" => "https://github.com/yltsrc/geocalc",
-              "Docs" => "http://hexdocs.pm/geocalc/"}]
+    [
+      files: ["lib", "priv", "mix.exs", "README*", "LICENSE*"],
+      maintainers: ["Yura Tolstik"],
+      licenses: ["MIT"],
+      links: %{
+        "GitHub" => "https://github.com/yltsrc/geocalc",
+        "Docs" => "http://hexdocs.pm/geocalc/"
+      }
+    ]
   end
 end

@@ -27,7 +27,7 @@ defmodule Geocalc do
       iex> Geocalc.distance_between(paris, london)
       344229.88946533133
   """
-  @spec distance_between(Point.t, Point.t) :: number
+  @spec distance_between(Point.t(), Point.t()) :: number
   def distance_between(point_1, point_2) do
     Calculator.distance_between(point_1, point_2)
   end
@@ -50,8 +50,9 @@ defmodule Geocalc do
       iex> Geocalc.within?(170_000, puerto_rico, san_juan)
       true
   """
-  @spec within?(number, Point.t, Point.t) :: boolean()
+  @spec within?(number, Point.t(), Point.t()) :: boolean()
   def within?(radius, _center, _point) when radius < 0, do: false
+
   def within?(radius, center, point) do
     Calculator.distance_between(center, point) <= radius
   end
@@ -74,7 +75,7 @@ defmodule Geocalc do
       iex> Geocalc.bearing(berlin, paris)
       -1.9739245359361486
   """
-  @spec bearing(Point.t, Point.t) :: number
+  @spec bearing(Point.t(), Point.t()) :: number
   def bearing(point_1, point_2) do
     Calculator.bearing(point_1, point_2)
   end
@@ -115,8 +116,8 @@ defmodule Geocalc do
       iex> Geocalc.destination_point(berlin, paris, distance)
       {:ok, [51.578054644172525, 10.096282782248409]}
   """
-  @spec destination_point(Point.t, Point.t, number) :: tuple
-  @spec destination_point(Point.t, number, number) :: tuple
+  @type point_or_bearing() :: Point.t() | number
+  @spec destination_point(Point.t(), point_or_bearing(), number) :: tuple
   def destination_point(point_1, point_2, distance) do
     Calculator.destination_point(point_1, point_2, distance)
   end
@@ -147,10 +148,7 @@ defmodule Geocalc do
       iex> Geocalc.intersection_point(berlin, bearing, berlin, bearing)
       {:error, "No intersection point found"}
   """
-  @spec intersection_point(Point.t, Point.t, Point.t, Point.t) :: tuple
-  @spec intersection_point(Point.t, Point.t, Point.t, number) :: tuple
-  @spec intersection_point(Point.t, number, Point.t, Point.t) :: tuple
-  @spec intersection_point(Point.t, number, Point.t, number) :: tuple
+  @spec intersection_point(Point.t(), point_or_bearing(), Point.t(), point_or_bearing()) :: tuple
   def intersection_point(point_1, bearing_1, point_2, bearing_2) do
     Calculator.intersection_point(point_1, bearing_1, point_2, bearing_2)
   rescue
@@ -168,7 +166,7 @@ defmodule Geocalc do
       iex> Geocalc.bounding_box(berlin, radius)
       [[52.417520954378574, 13.277235453275123], [52.59756284562143, 13.573037346724874]]
   """
-  @spec bounding_box(Point.t, number) :: list
+  @spec bounding_box(Point.t(), number) :: list
   def bounding_box(point, radius_in_m) do
     Calculator.bounding_box(point, radius_in_m)
   end
@@ -185,7 +183,7 @@ defmodule Geocalc do
       iex> Geocalc.geographic_center([point_1, point_2])
       [0.0, 1.5]
   """
-  @spec geographic_center(list) :: Point.t
+  @spec geographic_center(list) :: Point.t()
   def geographic_center(points) do
     Calculator.geographic_center(points)
   end
@@ -239,7 +237,7 @@ defmodule Geocalc do
       iex> Geocalc.max_latitude(berlin, bearing)
       55.953467429882835
   """
-  @spec max_latitude(Point.t, number) :: number
+  @spec max_latitude(Point.t(), number) :: number
   def max_latitude(point, bearing) do
     Calculator.max_latitude(point, bearing)
   end
@@ -256,7 +254,7 @@ defmodule Geocalc do
       iex> Geocalc.cross_track_distance_to(berlin, london, paris)
       -877680.2992295175
   """
-  @spec cross_track_distance_to(Point.t, Point.t, Point.t) :: number
+  @spec cross_track_distance_to(Point.t(), Point.t(), Point.t()) :: number
   def cross_track_distance_to(point, path_start_point, path_end_point) do
     Calculator.cross_track_distance_to(point, path_start_point, path_end_point)
   end
@@ -279,7 +277,7 @@ defmodule Geocalc do
       iex> Geocalc.crossing_parallels(point_1, point_2, latitude)
       {:error, "Not found"}
   """
-  @spec crossing_parallels(Point.t, Point.t, number) :: number
+  @spec crossing_parallels(Point.t(), Point.t(), number) :: number
   def crossing_parallels(point_1, path_2, latitude) do
     Calculator.crossing_parallels(point_1, path_2, latitude)
   end
