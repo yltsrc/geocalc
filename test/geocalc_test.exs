@@ -61,7 +61,11 @@ defmodule GeocalcTest do
     distance = 1_000
     brng = Geocalc.bearing(point_1, point_2)
     {:ok, point_3} = Geocalc.destination_point(point_1, brng, distance)
-    assert_in_delta Geocalc.distance_between(point_3, [1.2403670648864074, 2.3513527343464733]), 0, 0.0005
+
+    assert_in_delta Geocalc.distance_between(point_3, [1.2403670648864074, 2.3513527343464733]),
+                    0,
+                    0.0005
+
     actual_distance = Geocalc.distance_between(point_3, point_1)
     assert_in_delta actual_distance, distance, 0.0005
   end
@@ -71,7 +75,11 @@ defmodule GeocalcTest do
     point_2 = %{lat: 21.913108, lng: -160.193712}
     distance = 1_178_348
     {:ok, point_3} = Geocalc.destination_point(point_1, point_2, distance)
-    assert_in_delta Geocalc.distance_between(point_3, [42.64962243973242, 164.43934677825277]), 0, 0.0005
+
+    assert_in_delta Geocalc.distance_between(point_3, [42.64962243973242, 164.43934677825277]),
+                    0,
+                    0.0005
+
     actual_distance = Geocalc.distance_between(point_3, point_1)
     assert_in_delta actual_distance, distance, 0.0005
   end
@@ -81,7 +89,11 @@ defmodule GeocalcTest do
     point_2 = {21.913108, -160.193712}
     distance = 4_178_348
     {:ok, point_3} = Geocalc.destination_point(point_1, point_2, distance)
-    assert_in_delta Geocalc.distance_between(point_3, [27.939238854720823, -167.5615280845497]), 0, 0.0005
+
+    assert_in_delta Geocalc.distance_between(point_3, [27.939238854720823, -167.5615280845497]),
+                    0,
+                    0.0005
+
     actual_distance = Geocalc.distance_between(point_3, point_1)
     assert_in_delta actual_distance, distance, 0.0005
   end
@@ -129,7 +141,11 @@ defmodule GeocalcTest do
   test "returns a bounding box given a point and a radius in meters" do
     point = [52.5075419, 13.4251364]
     radius = 10_000
-    assert Geocalc.bounding_box(point, radius) == [[52.417520954378574, 13.277235453275123], [52.59756284562143, 13.573037346724874]]
+
+    assert Geocalc.bounding_box(point, radius) == [
+             [52.417520954378574, 13.277235453275123],
+             [52.59756284562143, 13.573037346724874]
+           ]
   end
 
   test "returns geographic center point" do
@@ -155,7 +171,9 @@ defmodule GeocalcTest do
     point_1 = %{lat: 46.1189424, lng: 150.402832}
     point_2 = %{lat: 21.9131082, lng: -160.1937128}
     latitude = 45.0
-    assert Geocalc.crossing_parallels(point_1, point_2, latitude) == {:ok, 106.52361930066911, 155.95500236778844}
+
+    assert Geocalc.crossing_parallels(point_1, point_2, latitude) ==
+             {:ok, 106.52361930066911, 155.95500236778844}
   end
 
   test "returns error message if no crossing parallels found" do
