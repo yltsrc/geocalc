@@ -219,6 +219,30 @@ defmodule Geocalc.Calculator do
     ]
   end
 
+  def bounding_box_for_points([]) do
+    [[0, 0], [0, 0]]
+  end
+
+  def bounding_box_for_points([point]) do
+    bounding_box(point, 0)
+  end
+
+  def bounding_box_for_points([point | points]) do
+    extend_bounding_box(bounding_box(point, 0), bounding_box_for_points(points))
+  end
+
+  defp extend_bounding_box([sw_point_1, ne_point_1], [sw_point_2, ne_point_2]) do
+    sw_lat = Kernel.min(Point.latitude(sw_point_2), Point.latitude(sw_point_1))
+    sw_lon = Kernel.min(Point.longitude(sw_point_2), Point.longitude(sw_point_1))
+    ne_lat = Kernel.max(Point.latitude(ne_point_2), Point.latitude(ne_point_1))
+    ne_lon = Kernel.max(Point.longitude(ne_point_2), Point.longitude(ne_point_1))
+
+    [
+      [sw_lat, sw_lon],
+      [ne_lat, ne_lon]
+    ]
+  end
+
   # Semi-axes of WGS-84 geoidal reference
   # Major semiaxis [m]
   @wgsa 6_378_137.0

@@ -85,6 +85,16 @@ Geocalc.bounding_box(berlin, radius)
 # => [[52.417520954378574, 13.277235453275123], [52.59756284562143, 13.573037346724874]]
 ```
 
+### Get bounding box from a list of points
+
+```elixir
+berlin = [52.5075419, 13.4251364]
+rome = [41.9102415, 12.3959161]
+minsk = [53.8838884, 27.5949741]
+Geocalc.bounding_box_for_points([berlin, rome, minsk])
+# => [[41.9102415, 12.3959161], [53.8838884, 27.5949741]]
+```
+
 ### Get geographical center point
 
 ```elixir

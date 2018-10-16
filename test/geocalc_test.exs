@@ -148,6 +148,29 @@ defmodule GeocalcTest do
            ]
   end
 
+  test "returns a bounding box given a list of points" do
+    point_1 = %{lat: 46.118942, lng: 150.402832}
+    point_2 = %{lat: 21.913108, lng: -160.193712}
+
+    assert Geocalc.bounding_box_for_points([point_1, point_2]) == [
+             [21.913108000000005, -160.193712],
+             [46.118942, 150.402832]
+           ]
+  end
+
+  test "returns a bounding box given a list with one point" do
+    point = [52.5075419, 13.4251364]
+
+    assert Geocalc.bounding_box_for_points([point]) == [
+             point,
+             point
+           ]
+  end
+
+  test "returns a bounding box given a list with no points" do
+    assert Geocalc.bounding_box_for_points([]) == [[0, 0], [0, 0]]
+  end
+
   test "returns geographic center point" do
     assert Geocalc.geographic_center([[0, 0], [0, 1]]) == [0.0, 0.5]
     assert Geocalc.geographic_center([[0, 0], [0, 1], [0, 2]]) == [0.0, 1.0]
