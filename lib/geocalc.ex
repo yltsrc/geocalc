@@ -157,8 +157,8 @@ defmodule Geocalc do
 
   @doc """
   Calculates a bounding box around a point with a radius in meters
-  Returns an array with 2 points (list format). The bottom left point,
-  and the top-right one
+  Returns an array with 2 points (list format). The bottom left (southwest) point,
+  and the top-right (northeast) one
 
   ## Example
       iex> berlin = [52.5075419, 13.4251364]
@@ -169,6 +169,23 @@ defmodule Geocalc do
   @spec bounding_box(Point.t(), number) :: list
   def bounding_box(point, radius_in_m) do
     Calculator.bounding_box(point, radius_in_m)
+  end
+
+  @doc """
+  Calculates a bounding box for a list of points
+  Returns an array with 2 points (list format). The bottom left (southwest) point,
+  and the top-right (northeast) one
+
+  ## Example
+      iex> berlin = [52.5075419, 13.4251364]
+      iex> london = [51.5286416, -0.1015987]
+      iex> paris = [48.8588589, 2.3475569]
+      iex> Geocalc.bounding_box_for_points([berlin, london, paris])
+      [[48.8588589, -0.1015987], [52.5075419, 13.4251364]]
+  """
+  @spec bounding_box_for_points(list) :: list
+  def bounding_box_for_points(points) do
+    Calculator.bounding_box_for_points(points)
   end
 
   @doc """
