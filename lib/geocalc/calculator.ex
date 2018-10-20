@@ -231,7 +231,7 @@ defmodule Geocalc.Calculator do
     extend_bounding_box(bounding_box(point, 0), bounding_box_for_points(points))
   end
 
-  defp extend_bounding_box([sw_point_1, ne_point_1], [sw_point_2, ne_point_2]) do
+  def extend_bounding_box([sw_point_1, ne_point_1], [sw_point_2, ne_point_2]) do
     sw_lat = Kernel.min(Point.latitude(sw_point_2), Point.latitude(sw_point_1))
     sw_lon = Kernel.min(Point.longitude(sw_point_2), Point.longitude(sw_point_1))
     ne_lat = Kernel.max(Point.latitude(ne_point_2), Point.latitude(ne_point_1))
@@ -241,6 +241,27 @@ defmodule Geocalc.Calculator do
       [sw_lat, sw_lon],
       [ne_lat, ne_lon]
     ]
+  end
+
+  def contains_point?([sw_point, ne_point], point) do
+    (Point.latitude(point) >= Point.latitude(sw_point)) &&
+      (Point.latitude(point) <= Point.latitude(ne_point)) &&
+      (Point.longitude(point) >= Point.longitude(sw_point)) &&
+      (Point.longitude(point) <= Point.longitude(ne_point))
+  end
+
+  def intersects_bounding_box?([sw_point_1, ne_point_1], [sw_point_2, ne_point_2]) do
+    (Point.latitude(ne_point_2) >= Point.latitude(sw_point_1)) &&
+      (Point.latitude(sw_point_2) <= Point.latitude(ne_point_1)) &&
+      (Point.longitude(ne_point_2) >= Point.longitude(sw_point_1)) &&
+      (Point.longitude(sw_point_2) <= Point.longitude(ne_point_1))
+  end
+
+  def overlaps_bounding_box?([sw_point_1, ne_point_1], [sw_point_2, ne_point_2]) do
+    (Point.latitude(ne_point_2) > Point.latitude(sw_point_1)) &&
+      (Point.latitude(sw_point_2) < Point.latitude(ne_point_1)) &&
+      (Point.longitude(ne_point_2) > Point.longitude(sw_point_1)) &&
+      (Point.longitude(sw_point_2) < Point.longitude(ne_point_1))
   end
 
   # Semi-axes of WGS-84 geoidal reference

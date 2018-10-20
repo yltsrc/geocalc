@@ -189,6 +189,66 @@ defmodule Geocalc do
   end
 
   @doc """
+  Extend the bounds to contain the given bounds
+  Returns an array with 2 points (list format). The bottom left (southwest) point,
+  and the top-right (northeast) one
+
+  ## Example
+      iex> berlin = [52.5075419, 13.4251364]
+      iex> london = [51.5286416, -0.1015987]
+      iex> Geocalc.extend_bounding_box([berlin, berlin], [london, london])
+      [[51.5286416, -0.1015987], [52.5075419, 13.4251364]]
+  """
+  @spec extend_bounding_box(list, list) :: list
+  def extend_bounding_box(bounding_box_1, bounding_box_2) do
+    Calculator.extend_bounding_box(bounding_box_1, bounding_box_2)
+  end
+
+  @doc """
+  Returns `true` if the bounding box contains the given point.
+
+  ## Example
+      iex> germany = [[47.27, 5.87], [55.1, 15.04]]
+      iex> berlin = [52.5075419, 13.4251364]
+      iex> Geocalc.contains_point?(germany, berlin)
+      true
+  """
+  @spec contains_point?(list, Point.t()) :: boolean
+  def contains_point?(bounding_box, point) do
+    Calculator.contains_point?(bounding_box, point)
+  end
+
+  @doc """
+  # Returns `true` if the bounding box intersects the given bounds.
+  # Two bounds intersect if they have at least one point in common.
+
+  ## Example
+      iex> germany = [[47.27, 5.87], [55.1, 15.04]]
+      iex> poland = [[49.0, 14.12], [55.03, 24.15]]
+      iex> Geocalc.intersects_bounding_box?(germany, poland)
+      true
+  """
+  @spec intersects_bounding_box?(list, list) :: boolean
+  def intersects_bounding_box?(bounding_box_1, bounding_box_2) do
+    Calculator.intersects_bounding_box?(bounding_box_1, bounding_box_2)
+  end
+
+  @doc """
+  # Returns `true` if the bounding box overlaps the given bounds.
+  # Two bounds overlap if their intersection is an area.
+
+  ## Example
+      iex> germany = [[47.27, 5.87], [55.1, 15.04]]
+      iex> berlin_suburbs = [[52.338261, 13.08835], [52.67551, 13.76116]]
+      iex> Geocalc.overlaps_bounding_box?(germany, berlin_suburbs)
+      true
+  """
+  @spec overlaps_bounding_box?(list, list) :: boolean
+  def overlaps_bounding_box?(bounding_box_1, bounding_box_2) do
+    Calculator.overlaps_bounding_box?(bounding_box_1, bounding_box_2)
+  end
+
+  @doc """
   Compute the geographic center (aka geographic midpoint, center of gravity)
   for an array of geocoded objects and/or [lat,lon] arrays (can be mixed).
   Any objects missing coordinates are ignored. Follows the procedure

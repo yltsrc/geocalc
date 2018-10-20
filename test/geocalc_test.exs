@@ -158,6 +158,72 @@ defmodule GeocalcTest do
            ]
   end
 
+  test "returns an extended bounding box" do
+    london = [51.5286416, -0.1015987]
+    paris = [48.8588589, 2.3475569]
+
+    assert Geocalc.extend_bounding_box([london, london], [paris, paris]) == [
+             [48.8588589, -0.1015987],
+             [51.5286416, 2.3475569]
+           ]
+  end
+
+  test "returns true if bounding box contains point" do
+    france = [[41.33, -5.22], [51.2, 9.55]]
+    paris = [48.8588589, 2.3475569]
+
+    assert Geocalc.contains_point?(france, paris)
+  end
+
+  test "returns false if bounding box does not contains point" do
+    france = [[41.33, -5.22], [51.2, 9.55]]
+    london = [51.5286416, -0.1015987]
+
+    refute Geocalc.contains_point?(france, london)
+  end
+
+  test "returns true if bounding box intersects bounding box" do
+    france = [[41.33, -5.22], [51.2, 9.55]]
+    spain = [[27.43, -18.39], [43.99, 4.59]]
+
+    assert Geocalc.intersects_bounding_box?(france, spain)
+  end
+
+  test "returns true if bounding box intersects bounding box with one point in common" do
+    france = [[41.33, -5.22], [51.2, 9.55]]
+    border = [[51.2, -5.22], [52, -5]]
+
+    assert Geocalc.intersects_bounding_box?(france, border)
+  end
+
+  test "returns false if bounding box does not intersects bounding box" do
+    france = [[41.33, -5.22], [51.2, 9.55]]
+    portugal = [[29.83, -31.56], [42.15, -6.19]]
+
+    refute Geocalc.intersects_bounding_box?(france, portugal)
+  end
+
+  test "returns true if bounding box overlaps bounding box" do
+    france = [[41.33, -5.22], [51.2, 9.55]]
+    spain = [[27.43, -18.39], [43.99, 4.59]]
+
+    assert Geocalc.overlaps_bounding_box?(france, spain)
+  end
+
+  test "returns false if bounding box overlaps bounding box with one point in common" do
+    france = [[41.33, -5.22], [51.2, 9.55]]
+    border = [[51.2, -5.22], [52, -5]]
+
+    refute Geocalc.overlaps_bounding_box?(france, border)
+  end
+
+  test "returns false if bounding box does not overlaps bounding box" do
+    france = [[41.33, -5.22], [51.2, 9.55]]
+    portugal = [[29.83, -31.56], [42.15, -6.19]]
+
+    refute Geocalc.overlaps_bounding_box?(france, portugal)
+  end
+
   test "returns a bounding box given a list with one point" do
     point = [52.5075419, 13.4251364]
 
