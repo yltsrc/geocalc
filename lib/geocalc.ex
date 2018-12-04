@@ -58,6 +58,34 @@ defmodule Geocalc do
   end
 
   @doc """
+  Calculates if a point is within a polygon. Return boolean.
+
+  ## Example
+      iex> point = [14.952242, 60.1696017]
+      iex> poly = [[24.950899, 60.169158], [24.953492, 60.169158], [24.953510, 60.170104], [24.950958, 60.169990]]
+      iex> Geocalc.within?(poly, point)
+      false
+
+  ## Example
+      iex> point = [24.952242, 60.1696017]
+      iex> poly = [[24.950899, 60.169158], [24.953492, 60.169158], [24.953510, 60.170104], [24.950958, 60.169990]]
+      iex> Geocalc.within?(poly, point)
+      true
+
+  ## Example
+      iex> point = [24.976567, 60.1612500]
+      iex> poly = [[24.950899, 60.169158], [24.953492, 60.169158], [24.953510, 60.170104], [24.950958, 60.169990]]
+      iex> Geocalc.within?(poly, point)
+      false
+
+  """
+  @spec within?([Point.t()], Point.t()) :: boolean()
+  def within?(poly, point) do
+    Calculator.point_in_polygon?(poly, point)
+  end
+
+
+  @doc """
   Calculates bearing.
   Return radians.
 

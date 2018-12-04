@@ -244,24 +244,24 @@ defmodule Geocalc.Calculator do
   end
 
   def contains_point?([sw_point, ne_point], point) do
-    (Point.latitude(point) >= Point.latitude(sw_point)) &&
-      (Point.latitude(point) <= Point.latitude(ne_point)) &&
-      (Point.longitude(point) >= Point.longitude(sw_point)) &&
-      (Point.longitude(point) <= Point.longitude(ne_point))
+    Point.latitude(point) >= Point.latitude(sw_point) &&
+      Point.latitude(point) <= Point.latitude(ne_point) &&
+      Point.longitude(point) >= Point.longitude(sw_point) &&
+      Point.longitude(point) <= Point.longitude(ne_point)
   end
 
   def intersects_bounding_box?([sw_point_1, ne_point_1], [sw_point_2, ne_point_2]) do
-    (Point.latitude(ne_point_2) >= Point.latitude(sw_point_1)) &&
-      (Point.latitude(sw_point_2) <= Point.latitude(ne_point_1)) &&
-      (Point.longitude(ne_point_2) >= Point.longitude(sw_point_1)) &&
-      (Point.longitude(sw_point_2) <= Point.longitude(ne_point_1))
+    Point.latitude(ne_point_2) >= Point.latitude(sw_point_1) &&
+      Point.latitude(sw_point_2) <= Point.latitude(ne_point_1) &&
+      Point.longitude(ne_point_2) >= Point.longitude(sw_point_1) &&
+      Point.longitude(sw_point_2) <= Point.longitude(ne_point_1)
   end
 
   def overlaps_bounding_box?([sw_point_1, ne_point_1], [sw_point_2, ne_point_2]) do
-    (Point.latitude(ne_point_2) > Point.latitude(sw_point_1)) &&
-      (Point.latitude(sw_point_2) < Point.latitude(ne_point_1)) &&
-      (Point.longitude(ne_point_2) > Point.longitude(sw_point_1)) &&
-      (Point.longitude(sw_point_2) < Point.longitude(ne_point_1))
+    Point.latitude(ne_point_2) > Point.latitude(sw_point_1) &&
+      Point.latitude(sw_point_2) < Point.latitude(ne_point_1) &&
+      Point.longitude(ne_point_2) > Point.longitude(sw_point_1) &&
+      Point.longitude(sw_point_2) < Point.longitude(ne_point_1)
   end
 
   # Semi-axes of WGS-84 geoidal reference
@@ -343,4 +343,6 @@ defmodule Geocalc.Calculator do
        rem_float(radians_to_degrees(lon_i_2) + 540, 360) - 180}
     end
   end
+
+  def point_in_polygon?(poly, point), do: Geocalc.Calculator.Polygon.point_in_polygon?(poly, point)
 end
