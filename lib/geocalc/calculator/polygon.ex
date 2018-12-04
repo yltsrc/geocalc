@@ -34,7 +34,6 @@ defmodule Geocalc.Calculator.Polygon do
     polygon
     |> to_segments()
     |> Enum.reduce(0, fn segment, count ->
-      IO.puts(count)
       apply(__MODULE__, :ray_intersects_segment, add_epsilon(segment, point)) + count
     end)
     |> Integer.is_odd()
@@ -53,28 +52,24 @@ defmodule Geocalc.Calculator.Polygon do
   end
 
   def add_epsilon(segment = [[_ax, ay], [_bx, by]], [px, py]) when py == ay or py == by do
-    IO.inspect("Add epsilon")
     [segment, [px, py + 0.00000001]]
   end
 
   def add_epsilon(segment, point), do: [segment, point]
 
   def ray_intersects_segment([[_ax, ay], [_bx, by]], [_px, py]) when py < ay or py > by do
-    IO.puts("py(#{py}) < ay(#{ay}) or py(#{py}) > by(#{by}) --> 0")
     0
   end
 
   # px >= max(ax, bx)
   def ray_intersects_segment([[ax, _ay], [bx, _by]], [px, _py])
       when (ax >= bx and px >= ax) or (bx >= ax and px >= bx) do
-    IO.puts("px(#{px}) >= max(ax(#{ax}), bx(#{bx})) --> 0")
     0
   end
 
   # px < min(ax, bx)
   def ray_intersects_segment([[ax, _ay], [bx, _by]], [px, _py])
       when (ax <= bx and px < ax) or (bx <= ax and px < bx) do
-    IO.puts("px(#{px}) < min(ax(#{ax}), bx(#{bx})) --> 1")
     1
   end
 
@@ -84,19 +79,15 @@ defmodule Geocalc.Calculator.Polygon do
 
     case {m_blue, m_red} do
       {:infinity, _} ->
-        IO.puts("m_blue(#{m_blue}) - m_red(#{m_red}) -> 1")
         1
 
       {_, :infinity} ->
-        IO.puts("m_blue(#{m_blue}) - m_red(#{m_red}) -> 0")
         0
 
       {m_blue, m_red} when m_blue >= m_red ->
-        IO.puts("m_blue(#{m_blue}) - m_red(#{m_red}) -> 1")
         1
 
       _ ->
-        IO.puts("m_blue(#{m_blue}) - m_red(#{m_red}) -> 0")
         0
     end
   end
