@@ -4,6 +4,7 @@ defmodule Geocalc do
   """
 
   alias Geocalc.Calculator
+  alias Geocalc.Calculator.Polygon
   alias Geocalc.Point
 
   @doc """
@@ -81,9 +82,8 @@ defmodule Geocalc do
   """
   @spec within?([Point.t()], Point.t()) :: boolean()
   def within?(poly, point) do
-    Calculator.point_in_polygon?(poly, point)
+    Polygon.point_in_polygon?(poly, point)
   end
-
 
   @doc """
   Calculates bearing.

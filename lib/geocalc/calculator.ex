@@ -343,6 +343,4 @@ defmodule Geocalc.Calculator do
        rem_float(radians_to_degrees(lon_i_2) + 540, 360) - 180}
     end
   end
-
-  def point_in_polygon?(poly, point), do: Geocalc.Calculator.Polygon.point_in_polygon?(poly, point)
 end
