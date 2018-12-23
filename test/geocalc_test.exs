@@ -1,6 +1,7 @@
 defmodule GeocalcTest do
   use ExUnit.Case
   doctest Geocalc
+  doctest Geocalc.Calculator.Polygon
 
   test "calculates distance between two points" do
     point_1 = [50.0663889, -5.7147222]
