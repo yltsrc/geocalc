@@ -7,6 +7,15 @@ defmodule Geocalc.DMS do
   @enforce_keys [:hours, :minutes, :seconds, :direction]
   defstruct [:hours, :minutes, :seconds, :direction]
 
+  @doc """
+  Converts `Geocalc.DMS` to decimal degrees
+
+  ## Example
+      iex> dms = %Geocalc.DMS{hours: 13, minutes: 31, seconds: 59.998, direction: "N"}
+      iex> Geocalc.DMS.to_decimal(dms)
+      13.533332777777778
+  """
+  @spec to_decimal(Geocalc.DMS.t()) :: number | :error
   def to_decimal(%Geocalc.DMS{minutes: minutes}) when is_integer(minutes) and minutes >= 60 do
     :error
   end
@@ -14,10 +23,10 @@ defmodule Geocalc.DMS do
     :error
   end
 
-  def to_decimal(%Geocalc.DMS{seconds: seconds}) when is_integer(seconds) and seconds >= 60 do
+  def to_decimal(%Geocalc.DMS{seconds: seconds}) when is_number(seconds) and seconds >= 60 do
     :error
   end
-  def to_decimal(%Geocalc.DMS{seconds: seconds}) when is_integer(seconds) and seconds < 0 do
+  def to_decimal(%Geocalc.DMS{seconds: seconds}) when is_number(seconds) and seconds < 0 do
     :error
   end
 

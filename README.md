@@ -156,3 +156,15 @@ argument for any function in this library.
 We already have implementations for `List`, `Tuple` and `Map`.
 You can define your own implementations if you need, everything we need to know
 to do calculations are `latitude` and `longitude`.
+
+## Geocalc.DMS
+
+`Geocalc.DMS` is a struct which contains degrees, minutes and seconds, which also can be used in `Geocalc.Point`.
+
+### Additionally now there is an options to convert `Geocalc.DMS` to decimal degrees.
+
+```elixir
+dms = %Geocalc.DMS{hours: 13, minutes: 31, seconds: 59.998, direction: "N"}
+Geocalc.DMS.to_decimal(dms)
+# => 13.533332777777778
+```
