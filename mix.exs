@@ -5,7 +5,7 @@ defmodule Geocalc.Mixfile do
     [
       app: :geocalc,
       name: "Geocalc",
-      version: "0.7.2",
+      version: "0.8.0",
       elixir: "~> 1.0",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
@@ -37,7 +37,7 @@ defmodule Geocalc.Mixfile do
     [
       {:benchfella, "~> 0.3.5", only: :bench},
       {:coverex, "~> 1.5.0", only: :test},
-      {:credo, "~> 1.1.4", only: [:dev, :test]},
+      {:credo, "~> 1.1.5", only: [:dev, :test]},
       {:ex_doc, "~> 0.21.2", only: :dev},
       {:mix_test_watch, "~> 0.9.0", only: :dev}
     ]
