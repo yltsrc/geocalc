@@ -3,6 +3,7 @@ defprotocol Geocalc.Point do
     The `Geocalc.Point` protocol is responsible for receiving
     latitude and longitude from any Elixir data structure.
     At this time it have implementations only for Map, Tuple and List.
+    Point values can be decimal degrees or DMS (degrees, minutes, seconds).
   """
 
   @doc "Returns point latitude"

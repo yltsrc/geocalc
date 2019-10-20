@@ -1,5 +1,6 @@
 defmodule Geocalc.DMSTest do
   use ExUnit.Case
+  doctest Geocalc.DMS
   alias Geocalc.DMS
 
   test "converts DMS to decimal" do
