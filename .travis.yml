@@ -4,6 +4,7 @@ elixir:
   - 1.7
   - 1.8
   - 1.9
+  - 1.10
 otp_release:
   - 19.3
   - 20.3
@@ -19,6 +20,10 @@ matrix:
       otp_release: 19.3
     - elixir: 1.9
       otp_release: 19.3
+    - elixir: 1.10
+      otp_release: 19.3
+    - elixir: 1.10
+      otp_release: 20.3
 cache:
   directories:
     - _build
