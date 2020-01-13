@@ -7,6 +7,8 @@ defmodule Geocalc.DMS do
   @enforce_keys [:hours, :minutes, :seconds, :direction]
   defstruct [:hours, :minutes, :seconds, :direction]
 
+  @type t :: %Geocalc.DMS{}
+
   @doc """
   Converts `Geocalc.DMS` to decimal degrees
 
