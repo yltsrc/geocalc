@@ -5,6 +5,7 @@ defmodule Geocalc.Calculator do
 
   @earth_radius 6_371_000
   @pi :math.pi()
+  @epsilon 2.220446049250313e-16
   @intersection_not_found "No intersection point found"
 
   def distance_between(point_1, point_2, radius \\ @earth_radius) do
@@ -98,6 +99,7 @@ defmodule Geocalc.Calculator do
     diff_fo = fo_2 - fo_1
     diff_la = la_2 - la_1
 
+    # angular distance point_1 - point_2
     be_12 =
       2 *
         :math.asin(
@@ -106,67 +108,62 @@ defmodule Geocalc.Calculator do
               :math.cos(fo_1) * :math.cos(fo_2) * :math.sin(diff_la / 2) * :math.sin(diff_la / 2)
           )
         )
+    if (abs(be_12) < @epsilon) do
+      {:ok, [Point.latitude(point_1), Point.longitude(point_1)]}
+    else
+      cos_fo_a = (:math.sin(fo_2) - :math.sin(fo_1) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_1))
+      cos_fo_b = (:math.sin(fo_1) - :math.sin(fo_2) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_2))
 
-    if be_12 == 0, do: throw(@intersection_not_found)
+      bo_1 = :math.acos(min(max(cos_fo_a, -1), 1))
+      bo_2 = :math.acos(min(max(cos_fo_b, -1), 1))
 
-    bo_1 =
-      :math.acos(
-        (:math.sin(fo_2) - :math.sin(fo_1) * :math.cos(be_12)) /
-          (:math.sin(be_12) * :math.cos(fo_1))
-      )
+      {bo_12, bo_21} =
+        if :math.sin(la_2 - la_1) > 0 do
+          {bo_1, 2 * :math.pi() - bo_2}
+        else
+          {2 * :math.pi() - bo_1, bo_2}
+        end
 
-    bo_2 =
-      :math.acos(
-        (:math.sin(fo_1) - :math.sin(fo_2) * :math.cos(be_12)) /
-          (:math.sin(be_12) * :math.cos(fo_2))
-      )
+      a_1 = bo_13 - bo_12
+      a_2 = bo_21 - bo_23
+      # infinite intersections
+      if :math.sin(a_1) == 0 && :math.sin(a_2) == 0, do: throw(@intersection_not_found)
+      # ambiguous intersection
+      if :math.sin(a_1) * :math.sin(a_2) < 0, do: throw(@intersection_not_found)
 
-    {bo_12, bo_21} =
-      if :math.sin(la_2 - la_1) > 0 do
-        {bo_1, 2 * :math.pi() - bo_2}
-      else
-        {2 * :math.pi() - bo_1, bo_2}
-      end
+      a_3 =
+        :math.acos(
+          -:math.cos(a_1) * :math.cos(a_2) + :math.sin(a_1) * :math.sin(a_2) * :math.cos(be_12)
+        )
 
-    a_1 = rem_float(bo_13 - bo_12 + :math.pi(), 2 * :math.pi()) - :math.pi()
-    a_2 = rem_float(bo_21 - bo_23 + :math.pi(), 2 * :math.pi()) - :math.pi()
-    # infinite intersections
-    if :math.sin(a_1) == 0 && :math.sin(a_2) == 0, do: throw(@intersection_not_found)
-    # ambiguous intersection
-    if :math.sin(a_1) * :math.sin(a_2) < 0, do: throw(@intersection_not_found)
+      be_13 =
+        :math.atan2(
+          :math.sin(be_12) * :math.sin(a_1) * :math.sin(a_2),
+          :math.cos(a_2) + :math.cos(a_1) * :math.cos(a_3)
+        )
 
-    a_3 =
-      :math.acos(
-        -:math.cos(a_1) * :math.cos(a_2) + :math.sin(a_1) * :math.sin(a_2) * :math.cos(be_12)
-      )
+      fo_3 =
+        :math.asin(
+          :math.sin(fo_1) * :math.cos(be_13) + :math.cos(fo_1) * :math.sin(be_13) * :math.cos(bo_13)
+        )
 
-    be_13 =
-      :math.atan2(
-        :math.sin(be_12) * :math.sin(a_1) * :math.sin(a_2),
-        :math.cos(a_2) + :math.cos(a_1) * :math.cos(a_3)
-      )
+      diff_la_13 =
+        :math.atan2(
+          :math.sin(bo_13) * :math.sin(be_13) * :math.cos(fo_1),
+          :math.cos(be_13) - :math.sin(fo_1) * :math.sin(fo_3)
+        )
 
-    fo_3 =
-      :math.asin(
-        :math.sin(fo_1) * :math.cos(be_13) + :math.cos(fo_1) * :math.sin(be_13) * :math.cos(bo_13)
-      )
+      la_3 = la_1 + diff_la_13
 
-    diff_la_13 =
-      :math.atan2(
-        :math.sin(bo_13) * :math.sin(be_13) * :math.cos(fo_1),
-        :math.cos(be_13) - :math.sin(fo_1) * :math.sin(fo_3)
-      )
-
-    la_3 = la_1 + diff_la_13
-
-    {:ok, [radians_to_degrees(fo_3), radians_to_degrees(la_3)]}
+      {:ok, [radians_to_degrees(fo_3), radians_to_degrees(la_3)]}
+    end
   end
 
-  defp rem_float(float_1, float_2) when float_1 < 0 do
+  def rem_float(float_1, float_2) when float_1 < 0 do
     float_1 - Float.ceil(float_1 / float_2) * float_2
   end
 
-  defp rem_float(float_1, float_2) do
+  def rem_float(float_1, float_2) do
     float_1 - Float.floor(float_1 / float_2) * float_2
   end
 

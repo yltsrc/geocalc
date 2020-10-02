@@ -168,12 +168,19 @@ defmodule Geocalc do
       iex> london = {51.5286416, -0.1015987}
       iex> paris = {48.8588589, 2.3475569}
       iex> Geocalc.intersection_point(berlin, london, paris, london)
-      {:ok, [51.5286416, -0.10159869999999019]}
+      {:ok, [51.5286416, -0.10159869999998701]}
 
   ## Example
       iex> berlin = %{lat: 52.5075419, lng: 13.4251364}
       iex> bearing = Geocalc.degrees_to_radians(90.0)
       iex> Geocalc.intersection_point(berlin, bearing, berlin, bearing)
+      {:ok, [52.5075419, 13.4251364]}
+
+  ## Example
+      iex> berlin_1 = %{lat: 52.5075419, lng: 13.4251364}
+      iex> berlin_2 = %{lat: 52.5075419, lng: 13.57}
+      iex> bearing = Geocalc.degrees_to_radians(90.0)
+      iex> Geocalc.intersection_point(berlin_1, bearing, berlin_2, bearing)
       {:error, "No intersection point found"}
   """
   @spec intersection_point(Point.t(), point_or_bearing(), Point.t(), point_or_bearing()) :: tuple
