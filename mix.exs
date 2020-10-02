@@ -37,9 +37,9 @@ defmodule Geocalc.Mixfile do
     [
       {:benchfella, "~> 0.3.5", only: :bench},
       {:coverex, "~> 1.5.0", only: :test},
-      {:credo, "~> 1.1.5", only: [:dev, :test]},
-      {:ex_doc, "~> 0.21.2", only: :dev},
-      {:mix_test_watch, "~> 0.9.0", only: :dev}
+      {:credo, "~> 1.4.0", only: [:dev, :test]},
+      {:ex_doc, "~> 0.22.1", only: :dev},
+      {:mix_test_watch, "~> 1.0.2", only: :dev}
     ]
   end
 
