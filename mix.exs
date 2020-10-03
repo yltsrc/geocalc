@@ -5,7 +5,7 @@ defmodule Geocalc.Mixfile do
     [
       app: :geocalc,
       name: "Geocalc",
-      version: "0.8.2",
+      version: "0.8.3",
       elixir: "~> 1.0",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
