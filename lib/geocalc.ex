@@ -372,6 +372,24 @@ defmodule Geocalc do
   end
 
   @doc """
+  Returns how far the point is along a path from from start-point, heading
+  towards end-point. That is, if a perpendicular is drawn from the point
+  to the (great circle) path, the along-track distance is the distance
+  from the start point to where the perpendicular crosses the path.
+
+  ## Example
+      iex> berlin = [52.5075419, 13.4251364]
+      iex> london = [51.5286416, -0.1015987]
+      iex> paris = [48.8588589, 2.3475569]
+      iex> Geocalc.along_track_distance_to(berlin, london, paris)
+      310412.6031976226
+  """
+  @spec along_track_distance_to(Point.t(), Point.t(), Point.t()) :: number
+  def along_track_distance_to(point, path_start_point, path_end_point) do
+    Calculator.along_track_distance_to(point, path_start_point, path_end_point)
+  end
+
+  @doc """
   Returns the pair of meridians at which a great circle defined by two points
   crosses the given latitude.
   Return longitudes.

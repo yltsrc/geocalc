@@ -125,6 +125,16 @@ Geocalc.cross_track_distance_to(berlin, london, paris)
 # => -877680.2992295175
 ```
 
+### Calculate how far the point is along a path from from start-point, heading towards end-point
+
+```elixir
+berlin = [52.5075419, 13.4251364]
+london = [51.5286416, -0.1015987]
+paris = [48.8588589, 2.3475569]
+Geocalc.along_track_distance_to(berlin, london, paris)
+# => 310412.6031976226
+```
+
 ### Get the pair of meridians at which a great circle defined by two points crosses the given latitude
 
 ```elixir
