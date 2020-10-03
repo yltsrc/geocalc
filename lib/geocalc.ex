@@ -254,8 +254,8 @@ defmodule Geocalc do
   end
 
   @doc """
-  # Returns `true` if the bounding box intersects the given bounds.
-  # Two bounds intersect if they have at least one point in common.
+  Returns `true` if the bounding box intersects the given bounds.
+  Two bounds intersect if they have at least one point in common.
 
   ## Example
       iex> germany = [[47.27, 5.87], [55.1, 15.04]]
@@ -269,8 +269,8 @@ defmodule Geocalc do
   end
 
   @doc """
-  # Returns `true` if the bounding box overlaps the given bounds.
-  # Two bounds overlap if their intersection is an area.
+  Returns `true` if the bounding box overlaps the given bounds.
+  Two bounds overlap if their intersection is an area.
 
   ## Example
       iex> germany = [[47.27, 5.87], [55.1, 15.04]]
