@@ -2,6 +2,8 @@ defmodule GeocalcTest do
   use ExUnit.Case
   doctest Geocalc
 
+  alias Geocalc.Point
+
   test "calculates distance between two points" do
     point_1 = [50.0663889, -5.7147222]
     point_2 = [58.6438889, -3.07]
@@ -100,11 +102,12 @@ defmodule GeocalcTest do
 
   test "returns intersection point" do
     point_1 = [51.8853, 0.2545]
-    bearing_1 = Geocalc.degrees_to_radians(108.56)
+    bearing_1 = Geocalc.degrees_to_radians(108.547)
     point_2 = [49.0034, 2.5735]
-    bearing_2 = Geocalc.degrees_to_radians(32.47)
+    bearing_2 = Geocalc.degrees_to_radians(32.435)
     {:ok, point_3} = Geocalc.intersection_point(point_1, bearing_1, point_2, bearing_2)
-    assert point_3 == [50.90673507027868, 4.509919730256895]
+    assert_in_delta Point.latitude(point_3), 50.9078, 0.00001
+    assert_in_delta Point.longitude(point_3), 4.5084, 0.00001
   end
 
   test "all roads lead to Rome" do
@@ -115,10 +118,20 @@ defmodule GeocalcTest do
     assert_in_delta Geocalc.distance_between(point_3, rome), 0, 0.0005
   end
 
-  test "returns error message if intersection point not found" do
+  test "returns point if point 1 and point 2 are the same" do
     minsk = %{lat: 53.8838884, lon: 27.5949741}
     bearing = Geocalc.degrees_to_radians(0)
-    {:error, msg} = Geocalc.intersection_point(minsk, bearing, minsk, bearing)
+    {:ok, point} = Geocalc.intersection_point(minsk, bearing, minsk, bearing)
+    assert Point.latitude(point) == Point.latitude(minsk)
+    assert Point.longitude(point) == Point.longitude(minsk)
+  end
+
+  test "returns error message if intersection point not found" do
+    point_1 = %{lat: 0, lon: 30}
+    point_2 = %{lat: 0, lon: 60}
+    bearing_1 = Geocalc.degrees_to_radians(0)
+    bearing_2 = Geocalc.degrees_to_radians(90)
+    {:error, msg} = Geocalc.intersection_point(point_1, bearing_1, point_2, bearing_2)
     assert msg == "No intersection point found"
   end
 
@@ -126,16 +139,16 @@ defmodule GeocalcTest do
     point_1 = %{lat: 30, lon: 0}
     point_2 = %{lat: 60, lon: 0}
     bearing = Geocalc.degrees_to_radians(90)
-    {:error, msg} = Geocalc.intersection_point(point_1, bearing, point_2, bearing)
-    assert msg == "No intersection point found"
+    {:ok, point} = Geocalc.intersection_point(point_1, bearing, point_2, bearing)
+    assert_in_delta Geocalc.distance_between(point, [0, 90]), 0, 0.0005
   end
 
   test "returns error message for two perpendicular destinations" do
     point = %{lat: 0, lon: 0}
     bearing_1 = Geocalc.degrees_to_radians(0)
     bearing_2 = Geocalc.degrees_to_radians(90)
-    {:error, msg} = Geocalc.intersection_point(point, bearing_1, point, bearing_2)
-    assert msg == "No intersection point found"
+    {:ok, point} = Geocalc.intersection_point(point, bearing_1, point, bearing_2)
+    assert_in_delta Geocalc.distance_between(point, [0, 0]), 0, 0.0005
   end
 
   test "returns a bounding box given a point and a radius in meters" do
