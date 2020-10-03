@@ -12,6 +12,9 @@ defmodule Geocalc.Mixfile do
       source_url: "https://github.com/yltsrc/geocalc",
       description: description(),
       test_coverage: [tool: Coverex.Task],
+      dialyzer: [
+        plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
+      ],
       package: package(),
       deps: deps()
     ]
@@ -38,6 +41,7 @@ defmodule Geocalc.Mixfile do
       {:benchfella, "~> 0.3.5", only: :bench},
       {:coverex, "~> 1.5.0", only: :test},
       {:credo, "~> 1.4.0", only: [:dev, :test]},
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.22.1", only: :dev},
       {:mix_test_watch, "~> 1.0.2", only: :dev}
     ]
