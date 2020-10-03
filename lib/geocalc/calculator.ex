@@ -310,6 +310,16 @@ defmodule Geocalc.Calculator do
     :math.asin(:math.sin(dist_13) * :math.sin(be_13 - be_12)) * radius
   end
 
+  def along_track_distance_to(point, path_start_point, path_end_point, radius \\ @earth_radius) do
+    dist_13 = distance_between(path_start_point, point, radius) / radius
+    be_13 = bearing(path_start_point, point)
+    be_12 = bearing(path_start_point, path_end_point)
+    bo_xt = :math.asin(:math.sin(dist_13) * :math.sin(be_13 - be_12))
+    bo_at = :math.acos(:math.cos(dist_13) / abs(:math.cos(bo_xt)))
+
+    bo_at * sign(:math.cos(be_12 - be_13)) * radius
+  end
+
   def crossing_parallels(point_1, point_2, latitude) do
     lat = degrees_to_radians(latitude)
 
@@ -340,4 +350,7 @@ defmodule Geocalc.Calculator do
        rem_float(radians_to_degrees(lon_i_2) + 540, 360) - 180}
     end
   end
+
+  defp sign(int) when int >= 0, do: 1
+  defp sign(int) when int < 0, do: -1
 end

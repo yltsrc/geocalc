@@ -263,10 +263,17 @@ defmodule GeocalcTest do
   end
 
   test "returns cross track distance to point" do
-    point_1 = %{lat: 46.118942, lng: 150.402832}
-    point_2 = %{lat: 21.913108, lng: -160.193712}
-    point_3 = %{lat: 52.417520954378574, lng: 13.277235453275123}
-    assert Geocalc.cross_track_distance_to(point_1, point_2, point_3) == -3_794_248.870228449
+    point_1 = %{lat: 53.2611, lng: -0.7972}
+    point_2 = %{lat: 53.3206, lng: -1.7297}
+    point_3 = %{lat: 53.1887, lng: 0.1334}
+    assert_in_delta Geocalc.cross_track_distance_to(point_1, point_2, point_3), -307.5, 0.05
+  end
+
+  test "returns along track distance to point" do
+    point_1 = %{lat: 53.2611, lng: -0.7972}
+    point_2 = %{lat: 53.3206, lng: -1.7297}
+    point_3 = %{lat: 53.1887, lng: 0.1334}
+    assert_in_delta Geocalc.along_track_distance_to(point_1, point_2, point_3), 62_331, 0.5
   end
 
   test "returns crossing parallels" do
