@@ -389,7 +389,7 @@ defmodule Geocalc do
       iex> Geocalc.crossing_parallels(point_1, point_2, latitude)
       {:error, "Not found"}
   """
-  @spec crossing_parallels(Point.t(), Point.t(), number) :: number
+  @spec crossing_parallels(Point.t(), Point.t(), number) :: tuple
   def crossing_parallels(point_1, path_2, latitude) do
     Calculator.crossing_parallels(point_1, path_2, latitude)
   end
