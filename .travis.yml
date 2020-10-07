@@ -5,6 +5,7 @@ elixir:
   - 1.8
   - 1.9
   - 1.10
+  - 1.11
 otp_release:
   - 19.3
   - 20.3
@@ -32,6 +33,10 @@ matrix:
     - elixir: 1.10
       otp_release: 19.3
     - elixir: 1.10
+      otp_release: 20.3
+    - elixir: 1.11
+      otp_release: 19.3
+    - elixir: 1.11
       otp_release: 20.3
 cache:
   directories:
