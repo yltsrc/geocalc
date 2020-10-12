@@ -22,9 +22,18 @@ defmodule GeocalcBench do
   @london %{lat: 51.5286416, lng: -0.1015987}
   @paris %{lat: 48.8588589, lng: 2.3475569}
   @bearing Geocalc.bearing(@berlin, @paris)
+  @poly Enum.map([@berlin, @london, @paris], &Map.values/1)
 
   bench "distance between" do
     Geocalc.distance_between(@berlin, @london)
+  end
+
+  bench "within?/2" do
+    Geocalc.within?(@poly, [51.89, 10.23])
+  end
+
+  bench "within?/3" do
+    Geocalc.within?(100_000, @berlin, @london)
   end
 
   bench "bearing" do
@@ -37,5 +46,13 @@ defmodule GeocalcBench do
 
   bench "intersection point" do
     Geocalc.intersection_point(@berlin, @bearing, @london, 1.502)
+  end
+
+  bench "bounding box" do
+    Geocalc.bounding_box(@london, 1_000_000)
+  end
+
+  bench "bounding box for points" do
+    Geocalc.bounding_box_for_points(@poly)
   end
 end
