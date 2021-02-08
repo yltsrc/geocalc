@@ -26,7 +26,7 @@ defmodule Geocalc.Calculator.Area do
     geometric_function(area, coord) == 1
   end
 
-  @spec area_size(%Shape.Circle{} | %Shape.Rectangle{} | %Shape.Ellipse{}) :: non_neg_integer()
+  @spec area_size(%Shape.Circle{} | %Shape.Rectangle{} | %Shape.Ellipse{}) :: number
   def area_size(area) do
     case area do
       %Shape.Circle{radius: r} -> @pi * r * r
