@@ -4,8 +4,8 @@ defmodule Geocalc do
   """
 
   alias Geocalc.Calculator
-  alias Geocalc.Calculator.Polygon
-  alias Geocalc.Point
+  alias Geocalc.Calculator.{Area, Polygon}
+  alias Geocalc.{Point, Shape}
 
   @doc """
   Calculates distance between 2 points.
@@ -410,5 +410,83 @@ defmodule Geocalc do
   @spec crossing_parallels(Point.t(), Point.t(), number) :: tuple
   def crossing_parallels(point_1, path_2, latitude) do
     Calculator.crossing_parallels(point_1, path_2, latitude)
+  end
+
+  @doc """
+  Check if a `point` is inside `area`
+  Return true if inside area, false if not
+
+  ## Example
+      iex> area = %Geocalc.Shape.Circle{latitude: 48.856614, longitude: 2.3522219, radius: 1000}
+      iex> point = %{lat: 48.856612, lng: 2.3522217}
+      iex> Geocalc.in_area?(area, point)
+      true
+  """
+  @spec in_area?(Shape.Circle.t() | Shape.Rectangle.t() | Shape.Ellipse.t(), Point.t()) ::
+          boolean
+  def in_area?(area, point) do
+    Area.point_in_area?(area, point)
+  end
+
+  @doc """
+  Check if a `point` is outside `area`
+  Return true if outside area, false if not
+
+  ## Example
+    iex> area = %Geocalc.Shape.Circle{latitude: 48.856614, longitude: 2.3522219, radius: 10}
+    iex> point = %{lat: 48.856418, lng: 2.365871}
+    iex> Geocalc.outside_area?(area, point)
+    true
+  """
+  @spec outside_area?(Shape.Circle.t() | Shape.Rectangle.t() | Shape.Ellipse.t(), Point.t()) ::
+          boolean
+  def outside_area?(area, point) do
+    Area.point_outside_area?(area, point)
+  end
+
+  @doc """
+  Check if a `point` is at the border of `area`
+  Return true if at border, false if not
+
+  ## Example
+    iex> area = %Geocalc.Shape.Circle{latitude: 48.856614, longitude: 2.3522219, radius: 1000}
+    iex> point = %{lat: 48.856418, lng: 2.365871}
+    iex> Geocalc.at_area_border?(area, point)
+    true
+  """
+  @spec at_area_border?(Shape.Circle.t() | Shape.Rectangle.t() | Shape.Ellipse.t(), Point.t()) ::
+          boolean
+  def at_area_border?(area, point) do
+    Area.point_at_area_border?(area, point)
+  end
+
+  @doc """
+  Check if a `point` at the center point of `area`
+  Return true if at center point, false if not
+
+  ## Example
+    iex> area = %Geocalc.Shape.Circle{latitude: 48.856614, longitude: 2.3522219, radius: 100}
+    iex> point = %{lat: 48.856614, lng: 2.3522219}
+    iex> Geocalc.at_center_point?(area, point)
+    true
+  """
+  @spec at_center_point?(Shape.Circle.t() | Shape.Rectangle.t() | Shape.Ellipse.t(), Point.t()) ::
+          boolean
+  def at_center_point?(area, point) do
+    Area.point_at_center_point?(area, point)
+  end
+
+  @doc """
+  Calculate the given `area` surface.
+  Returns `area` surface in square meters.
+
+  ## Example
+    iex> area = %Geocalc.Shape.Circle{latitude: 48.856614, longitude: 2.3522219, radius: 1000}
+    iex> Geocalc.area_size(area)
+    3141592.653589793
+  """
+  @spec area_size(Shape.Circle.t() | Shape.Rectangle.t() | Shape.Ellipse.t()) :: non_neg_integer
+  def area_size(area) do
+    Area.area_size(area)
   end
 end
