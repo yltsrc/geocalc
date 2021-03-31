@@ -10,6 +10,9 @@ Calculate distance, bearing and more between latitude/longitude points
 All the formulas are adapted from
 [http://www.movable-type.co.uk/scripts/latlong.html](http://www.movable-type.co.uk/scripts/latlong.html)
 
+Area calculations are implemented from
+[ETSI EN 302 931 v1.1.1](https://www.etsi.org/deliver/etsi_en/302900_302999/302931/01.01.01_60/en_302931v010101p.pdf) standard
+
 ## Installation
 
 First, add Geocalc to your `mix.exs` dependencies:
@@ -158,6 +161,45 @@ Geocalc.radians_to_degrees(1.234)
 # => 70.70299191914359
 ```
 
+## Geocalc.Shape
+
+Contains geometrical shapes designed for geofencing calculations, ie: determine if one point is inside or outside a geographical area.
+Three area shapes are defined:
+* Circle
+* Rectangle
+* Ellipse
+
+### Check if a point is inside an area
+```elixir
+%Geocalc.Shape.Circle{latitude: 48.856614, longitude: 2.3522219, radius: 1000}
+point = %{lat: 48.856612, lng: 2.3522217}
+Geocalc.in_area?(area, point)
+# => true
+```
+
+### Check if a point is outside an area
+```elixir
+%Geocalc.Shape.Circle{latitude: 48.856614, longitude: 2.3522219, radius: 10}
+point = %{lat: 48.856418, lng: 2.365871}
+Geocalc.outside_area?(area, point)
+# => true
+```
+
+### Check if a point is at the border of an area
+```elixir
+area = %Geocalc.Shape.Circle{latitude: 48.856614, longitude: 2.3522219, radius: 1000}
+point = %{lat: 48.856418, lng: 2.365871}
+Geocalc.at_area_border?(area, point)
+# => true
+```
+
+### Check if a point at the center point of an area
+```elixir
+area = %Geocalc.Shape.Circle{latitude: 48.856614, longitude: 2.3522219, radius: 100}
+point = %{lat: 48.856614, lng: 2.3522219}
+Geocalc.at_center_point?(area, point)
+# => true
+```
 
 ## Geocalc.Point protocol
 

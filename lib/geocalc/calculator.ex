@@ -108,11 +108,17 @@ defmodule Geocalc.Calculator do
               :math.cos(fo_1) * :math.cos(fo_2) * :math.sin(diff_la / 2) * :math.sin(diff_la / 2)
           )
         )
-    if (abs(be_12) < @epsilon) do
+
+    if abs(be_12) < @epsilon do
       {:ok, [Point.latitude(point_1), Point.longitude(point_1)]}
     else
-      cos_fo_a = (:math.sin(fo_2) - :math.sin(fo_1) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_1))
-      cos_fo_b = (:math.sin(fo_1) - :math.sin(fo_2) * :math.cos(be_12)) / (:math.sin(be_12) * :math.cos(fo_2))
+      cos_fo_a =
+        (:math.sin(fo_2) - :math.sin(fo_1) * :math.cos(be_12)) /
+          (:math.sin(be_12) * :math.cos(fo_1))
+
+      cos_fo_b =
+        (:math.sin(fo_1) - :math.sin(fo_2) * :math.cos(be_12)) /
+          (:math.sin(be_12) * :math.cos(fo_2))
 
       bo_1 = :math.acos(min(max(cos_fo_a, -1), 1))
       bo_2 = :math.acos(min(max(cos_fo_b, -1), 1))
@@ -144,7 +150,8 @@ defmodule Geocalc.Calculator do
 
       fo_3 =
         :math.asin(
-          :math.sin(fo_1) * :math.cos(be_13) + :math.cos(fo_1) * :math.sin(be_13) * :math.cos(bo_13)
+          :math.sin(fo_1) * :math.cos(be_13) +
+            :math.cos(fo_1) * :math.sin(be_13) * :math.cos(bo_13)
         )
 
       diff_la_13 =
@@ -267,7 +274,7 @@ defmodule Geocalc.Calculator do
   # Minor semiaxis [m]
   @wgsb 6_356_752.3
 
-  defp earth_radius(lat) do
+  def earth_radius(lat) do
     # http://en.wikipedia.org/wiki/Earth_radius
     an = @wgsa * @wgsa * :math.cos(lat)
     bn = @wgsb * @wgsb * :math.sin(lat)

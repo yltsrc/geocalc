@@ -2,7 +2,7 @@ defmodule GeocalcTest do
   use ExUnit.Case
   doctest Geocalc
 
-  alias Geocalc.Point
+  alias Geocalc.{Point, Shape}
 
   test "calculates distance between two points" do
     point_1 = [50.0663889, -5.7147222]
@@ -290,5 +290,64 @@ defmodule GeocalcTest do
     point_2 = %{lat: 180, lng: 90}
     latitude = 45.0
     assert Geocalc.crossing_parallels(point_1, point_2, latitude) == {:error, "Not found"}
+  end
+
+  test "returns if point is inside circle area" do
+    area = %Shape.Circle{latitude: 48.856614, longitude: 2.3522219, radius: 1000}
+    point = %{lat: 48.856612, lng: 2.3522217}
+
+    assert Geocalc.in_area?(area, point)
+    assert not Geocalc.outside_area?(area, point)
+    assert not Geocalc.at_area_border?(area, point)
+    assert not Geocalc.at_center_point?(area, point)
+  end
+
+  test "returns if point is at center of a circle area" do
+    area = %Shape.Circle{latitude: 48.856614, longitude: 2.3522219, radius: 10}
+    point = %{lat: 48.856614, lng: 2.3522219}
+
+    assert Geocalc.in_area?(area, point)
+    assert Geocalc.at_center_point?(area, point)
+  end
+
+  test "returns if point is at border of circle area" do
+    area = %Shape.Circle{latitude: 48.856614, longitude: 2.3522219, radius: 1000}
+    point = %{lat: 48.856418, lng: 2.365871}
+
+    assert Geocalc.at_area_border?(area, point)
+  end
+
+  test "returns if point is inside rectangle area" do
+    area = %Shape.Rectangle{
+      latitude: 48.856614,
+      longitude: 2.3522219,
+      long_semi_axis: 500,
+      short_semi_axis: 250,
+      angle: 0
+    }
+
+    point = %{lat: 48.856612, lng: 2.3522217}
+
+    assert Geocalc.in_area?(area, point)
+    assert not Geocalc.outside_area?(area, point)
+    assert not Geocalc.at_area_border?(area, point)
+    assert not Geocalc.at_center_point?(area, point)
+  end
+
+  test "returns if point is inside ellipse area" do
+    area = %Shape.Ellipse{
+      latitude: 48.856614,
+      longitude: 2.3522219,
+      long_semi_axis: 500,
+      short_semi_axis: 250,
+      angle: 0
+    }
+
+    point = %{lat: 48.856612, lng: 2.3522217}
+
+    assert Geocalc.in_area?(area, point)
+    assert not Geocalc.outside_area?(area, point)
+    assert not Geocalc.at_area_border?(area, point)
+    assert not Geocalc.at_center_point?(area, point)
   end
 end
