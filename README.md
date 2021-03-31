@@ -19,7 +19,7 @@ First, add Geocalc to your `mix.exs` dependencies:
 
 ```elixir
 def deps do
-  [{:geocalc, "~> 0.5"}]
+  [{:geocalc, "~> 0.8"}]
 end
 ```
 
