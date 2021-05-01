@@ -1,31 +1,35 @@
 # Geocalc
 
 [![Build Status](https://travis-ci.org/yltsrc/geocalc.svg?branch=master)](https://travis-ci.org/yltsrc/geocalc)
-[![Hex.pm](https://img.shields.io/hexpm/v/geocalc.svg)](https://hex.pm/packages/geocalc)
+[![Module Version](https://img.shields.io/hexpm/v/geocalc.svg)](https://hex.pm/packages/geocalc)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/geocalc/)
+[![Total Download](https://img.shields.io/hexpm/dt/geocalc.svg)](https://hex.pm/packages/geocalc)
+[![License](https://img.shields.io/hexpm/l/geocalc.svg)](https://github.com/yltsrc/geocalc/blob/master/LICENSE)
+[![Last Updated](https://img.shields.io/github/last-commit/yltsrc/geocalc.svg)](https://github.com/yltsrc/geocalc/commits/master)
 
-Documentation: [http://hexdocs.pm/geocalc](http://hexdocs.pm/geocalc)
-
-Calculate distance, bearing and more between latitude/longitude points
+Calculate distance, bearing and more between latitude/longitude points.
 
 All the formulas are adapted from
-[http://www.movable-type.co.uk/scripts/latlong.html](http://www.movable-type.co.uk/scripts/latlong.html)
+[http://www.movable-type.co.uk/scripts/latlong.html](http://www.movable-type.co.uk/scripts/latlong.html).
 
 Area calculations are implemented from
-[ETSI EN 302 931 v1.1.1](https://www.etsi.org/deliver/etsi_en/302900_302999/302931/01.01.01_60/en_302931v010101p.pdf) standard
+[ETSI EN 302 931 v1.1.1](https://www.etsi.org/deliver/etsi_en/302900_302999/302931/01.01.01_60/en_302931v010101p.pdf) standard.
 
 ## Installation
 
-First, add Geocalc to your `mix.exs` dependencies:
+First, add `:geocalc` to your `mix.exs` dependencies:
 
 ```elixir
 def deps do
-  [{:geocalc, "~> 0.8"}]
+  [
+    {:geocalc, "~> 0.8"}
+  ]
 end
 ```
 
 And then fetch your dependencies:
 
-```sh-session
+```bash
 $ mix deps.get
 ```
 
@@ -220,3 +224,47 @@ dms = %Geocalc.DMS{hours: 13, minutes: 31, seconds: 59.998, direction: "N"}
 Geocalc.DMS.to_decimal(dms)
 # => 13.533332777777778
 ```
+
+## Benchmark
+
+Run this command to generate the benchmark result:
+
+```bash
+$ MIX_ENV=bench mix bench
+
+Settings:
+  duration:      1.0 s
+
+## GeocalcBench
+[03:00:36] 1/10: bearing
+[03:00:37] 2/10: bounding box
+[03:00:39] 3/10: bounding box for points
+[03:00:53] 3/10: degrees to radians
+[03:01:03] 5/10: destination point
+[03:01:06] 6/10: distance between
+[03:01:08] 7/10: intersection point
+[03:01:11] 8/10: radians to degrees
+[03:01:13] 9/10: within?/2
+[03:01:15] 10/10: within?/3
+
+Finished in 31.32 seconds
+
+## GeocalcBench
+benchmark name           iterations   average time
+degrees to radians        100000000   0.09 µs/op
+radians to degrees         10000000   0.17 µs/op
+bounding box                1000000   1.51 µs/op
+bearing                     1000000   1.65 µs/op
+destination point           1000000   1.89 µs/op
+within?/3                   1000000   2.10 µs/op
+distance between            1000000   2.33 µs/op
+intersection point           500000   4.96 µs/op
+bounding box for points      500000   7.26 µs/op
+within?/2                    100000   12.17 µs/op
+```
+
+## Copyright and License
+
+Copyright (c) 2015 Yura Tolstik
+
+Released under the MIT License, which can be found in the repository in [LICENSE.md](./LICENSE.md).
