@@ -5,16 +5,16 @@ defmodule Geocalc.Calculator.Polygon do
   require Integer
 
   @doc """
-  Check if point is inside a polygon
+  Check if point is inside a polygon.
 
-  ## Example
+  ## Examples
+
       iex> import Geocalc.Calculator.Polygon
       iex> polygon = [[1, 2], [3, 4], [5, 2], [3, 0]]
       iex> point = [3, 2]
       iex> point_in_polygon?(polygon, point)
       true
 
-  ## Example
       iex> import Geocalc.Calculator.Polygon
       iex> polygon = [[1, 2], [3, 4], [5, 2], [3, 0]]
       iex> point = [1.5, 3]

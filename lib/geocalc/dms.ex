@@ -1,7 +1,9 @@
 defmodule Geocalc.DMS do
   @moduledoc """
-    The `Geocalc.DMS` is a struct which contains degrees, minutes, seconds and cardinal direction.
-    Also have functions to convert DMS to decimal degrees.
+  The `Geocalc.DMS` is a struct which contains degrees, minutes, seconds and
+  cardinal direction.
+
+  Also have functions to convert DMS to decimal degrees.
   """
 
   @enforce_keys [:hours, :minutes, :seconds, :direction]
@@ -10,12 +12,14 @@ defmodule Geocalc.DMS do
   @type t :: %Geocalc.DMS{}
 
   @doc """
-  Converts `Geocalc.DMS` to decimal degrees
+  Converts `Geocalc.DMS` to decimal degrees.
 
-  ## Example
+  ## Examples
+
       iex> dms = %Geocalc.DMS{hours: 13, minutes: 31, seconds: 59.998, direction: "N"}
       iex> Geocalc.DMS.to_decimal(dms)
       13.533332777777778
+
   """
   @spec to_decimal(Geocalc.DMS.t()) :: number | :error
   def to_decimal(%Geocalc.DMS{minutes: minutes}) when is_integer(minutes) and minutes >= 60 do
