@@ -1,7 +1,7 @@
 defmodule Geocalc.Calculator.Area do
   @moduledoc false
 
-  alias Geocalc.{Shape, Calculator, Point}
+  alias Geocalc.{Calculator, Point, Shape}
 
   @pi :math.pi()
 
