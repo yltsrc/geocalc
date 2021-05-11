@@ -1,10 +1,10 @@
 # Geocalc
 
-[![Build Status](https://travis-ci.org/yltsrc/geocalc.svg?branch=master)](https://travis-ci.org/yltsrc/geocalc)
+[![Build Status](https://github.com/yltsrc/geocalc/actions/workflows/elixir.yml/badge.svg?branch=master)](https://github.com/yltsrc/geocalc/actions/workflows/elixir.yml?query=branch%3Amaster)
 [![Module Version](https://img.shields.io/hexpm/v/geocalc.svg)](https://hex.pm/packages/geocalc)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/geocalc/)
 [![Total Download](https://img.shields.io/hexpm/dt/geocalc.svg)](https://hex.pm/packages/geocalc)
-[![License](https://img.shields.io/hexpm/l/geocalc.svg)](https://github.com/yltsrc/geocalc/blob/master/LICENSE)
+[![License](https://img.shields.io/hexpm/l/geocalc.svg)](https://github.com/yltsrc/geocalc/blob/master/LICENSE.md)
 [![Last Updated](https://img.shields.io/github/last-commit/yltsrc/geocalc.svg)](https://github.com/yltsrc/geocalc/commits/master)
 
 Calculate distance, bearing and more between latitude/longitude points.
