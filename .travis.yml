@@ -1,6 +1,5 @@
 language: elixir
 elixir:
-  - 1.6
   - 1.7
   - 1.8
   - 1.9
@@ -14,12 +13,6 @@ otp_release:
   - 23.0
 matrix:
   exclude:
-    - elixir: 1.6
-      otp_release: 21.3
-    - elixir: 1.6
-      otp_release: 22.3
-    - elixir: 1.6
-      otp_release: 23.0
     - elixir: 1.7
       otp_release: 23.0
     - elixir: 1.8

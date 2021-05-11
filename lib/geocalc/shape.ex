@@ -21,10 +21,10 @@ defmodule Geocalc.Shape do
     defstruct [:latitude, :longitude, :radius]
 
     @type t :: %__MODULE__{
-      latitude: number | Geocalc.DMS.t(),
-      longitude: number | Geocalc.DMS.t(),
-      radius: number
-    }
+            latitude: number | Geocalc.DMS.t(),
+            longitude: number | Geocalc.DMS.t(),
+            radius: number
+          }
   end
 
   defmodule Rectangle do
@@ -47,12 +47,12 @@ defmodule Geocalc.Shape do
     defstruct [:latitude, :longitude, :long_semi_axis, :short_semi_axis, :angle]
 
     @type t :: %__MODULE__{
-      latitude: number | Geocalc.DMS.t(),
-      longitude: number | Geocalc.DMS.t(),
-      long_semi_axis: number,
-      short_semi_axis: number,
-      angle: number
-    }
+            latitude: number | Geocalc.DMS.t(),
+            longitude: number | Geocalc.DMS.t(),
+            long_semi_axis: number,
+            short_semi_axis: number,
+            angle: number
+          }
   end
 
   defmodule Ellipse do
@@ -74,11 +74,11 @@ defmodule Geocalc.Shape do
     defstruct [:latitude, :longitude, :long_semi_axis, :short_semi_axis, :angle]
 
     @type t :: %__MODULE__{
-      latitude: number | Geocalc.DMS.t(),
-      longitude: number | Geocalc.DMS.t(),
-      long_semi_axis: number,
-      short_semi_axis: number,
-      angle: number
-    }
+            latitude: number | Geocalc.DMS.t(),
+            longitude: number | Geocalc.DMS.t(),
+            long_semi_axis: number,
+            short_semi_axis: number,
+            angle: number
+          }
   end
 end
