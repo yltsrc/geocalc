@@ -13,17 +13,29 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        elixir: ['1.7', '1.8', '1.9', '1.10', '1.11']
-        otp: ['20.3', '21.3', '22.3', '23.3']
+        elixir: ['1.7', '1.8', '1.9', '1.10', '1.11', '1.12']
+        otp: ['20.3', '21.3', '22.3', '23.3', '24.3']
         exclude:
+          - elixir: '1.12'
+            otp: '21.3'
+          - elixir: '1.12'
+            otp: '20.3'
           - elixir: '1.11'
             otp: '20.3'
           - elixir: '1.10'
+            otp: '24.3'
+          - elixir: '1.10'
             otp: '20.3'
+          - elixir: '1.9'
+            otp: '24.3'
           - elixir: '1.9'
             otp: '23.3'
           - elixir: '1.8'
+            otp: '24.3'
+          - elixir: '1.8'
             otp: '23.3'
+          - elixir: '1.7'
+            otp: '24.3'
           - elixir: '1.7'
             otp: '23.3'
     steps:
@@ -69,8 +81,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        elixir: ['1.11']
-        otp: ['23.3']
+        elixir: ['1.12']
+        otp: ['24.3']
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.6.0
@@ -114,17 +126,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        elixir: ['1.7', '1.8', '1.9', '1.10', '1.11']
-        otp: ['20.3', '21.3', '22.3', '23.3']
+        elixir: ['1.7', '1.8', '1.9', '1.10', '1.11', '1.12']
+        otp: ['20.3', '21.3', '22.3', '23.3', '24.3']
         exclude:
+          - elixir: '1.12'
+            otp: '21.3'
+          - elixir: '1.12'
+            otp: '20.3'
           - elixir: '1.11'
             otp: '20.3'
           - elixir: '1.10'
+            otp: '24.3'
+          - elixir: '1.10'
             otp: '20.3'
+          - elixir: '1.9'
+            otp: '24.3'
           - elixir: '1.9'
             otp: '23.3'
           - elixir: '1.8'
+            otp: '24.3'
+          - elixir: '1.8'
             otp: '23.3'
+          - elixir: '1.7'
+            otp: '24.3'
           - elixir: '1.7'
             otp: '23.3'
     steps:
