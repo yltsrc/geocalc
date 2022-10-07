@@ -175,7 +175,7 @@ Three area shapes are defined:
 
 ### Check if a point is inside an area
 ```elixir
-%Geocalc.Shape.Circle{latitude: 48.856614, longitude: 2.3522219, radius: 1000}
+area = %Geocalc.Shape.Circle{latitude: 48.856614, longitude: 2.3522219, radius: 1000}
 point = %{lat: 48.856612, lng: 2.3522217}
 Geocalc.in_area?(area, point)
 # => true
@@ -183,7 +183,7 @@ Geocalc.in_area?(area, point)
 
 ### Check if a point is outside an area
 ```elixir
-%Geocalc.Shape.Circle{latitude: 48.856614, longitude: 2.3522219, radius: 10}
+area = %Geocalc.Shape.Circle{latitude: 48.856614, longitude: 2.3522219, radius: 10}
 point = %{lat: 48.856418, lng: 2.365871}
 Geocalc.outside_area?(area, point)
 # => true
