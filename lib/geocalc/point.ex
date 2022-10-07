@@ -22,7 +22,11 @@ end
 
 defimpl Geocalc.Point, for: List do
   def latitude([lat = %Geocalc.DMS{}, _lng]) do
-    Geocalc.DMS.to_decimal(lat)
+    Geocalc.DMS.to_degrees(lat)
+  end
+
+  def latitude([lat = %Decimal{}, _lng]) do
+    Decimal.to_float(lat)
   end
 
   def latitude([lat, _lng]) when is_number(lat) do
@@ -30,7 +34,11 @@ defimpl Geocalc.Point, for: List do
   end
 
   def longitude([_lat, lng = %Geocalc.DMS{}]) do
-    Geocalc.DMS.to_decimal(lng)
+    Geocalc.DMS.to_degrees(lng)
+  end
+
+  def longitude([_lat, lng = %Decimal{}]) do
+    Decimal.to_float(lng)
   end
 
   def longitude([_lat, lng]) when is_number(lng) do
@@ -40,7 +48,11 @@ end
 
 defimpl Geocalc.Point, for: Map do
   def latitude(%{lat: lat = %Geocalc.DMS{}}) do
-    Geocalc.DMS.to_decimal(lat)
+    Geocalc.DMS.to_degrees(lat)
+  end
+
+  def latitude(%{lat: lat = %Decimal{}}) do
+    Decimal.to_float(lat)
   end
 
   def latitude(%{lat: lat}) when is_number(lat) do
@@ -48,7 +60,11 @@ defimpl Geocalc.Point, for: Map do
   end
 
   def latitude(%{latitude: lat = %Geocalc.DMS{}}) do
-    Geocalc.DMS.to_decimal(lat)
+    Geocalc.DMS.to_degrees(lat)
+  end
+
+  def latitude(%{latitude: lat = %Decimal{}}) do
+    Decimal.to_float(lat)
   end
 
   def latitude(%{latitude: lat}) when is_number(lat) do
@@ -56,7 +72,11 @@ defimpl Geocalc.Point, for: Map do
   end
 
   def longitude(%{lon: lng = %Geocalc.DMS{}}) do
-    Geocalc.DMS.to_decimal(lng)
+    Geocalc.DMS.to_degrees(lng)
+  end
+
+  def longitude(%{lon: lng = %Decimal{}}) do
+    Decimal.to_float(lng)
   end
 
   def longitude(%{lon: lng}) when is_number(lng) do
@@ -64,7 +84,11 @@ defimpl Geocalc.Point, for: Map do
   end
 
   def longitude(%{lng: lng = %Geocalc.DMS{}}) do
-    Geocalc.DMS.to_decimal(lng)
+    Geocalc.DMS.to_degrees(lng)
+  end
+
+  def longitude(%{lng: lng = %Decimal{}}) do
+    Decimal.to_float(lng)
   end
 
   def longitude(%{lng: lng}) when is_number(lng) do
@@ -72,7 +96,11 @@ defimpl Geocalc.Point, for: Map do
   end
 
   def longitude(%{longitude: lng = %Geocalc.DMS{}}) do
-    Geocalc.DMS.to_decimal(lng)
+    Geocalc.DMS.to_degrees(lng)
+  end
+
+  def longitude(%{longitude: lng = %Decimal{}}) do
+    Decimal.to_float(lng)
   end
 
   def longitude(%{longitude: lng}) when is_number(lng) do
@@ -82,7 +110,11 @@ end
 
 defimpl Geocalc.Point, for: Tuple do
   def latitude({lat = %Geocalc.DMS{}, _lng}) do
-    Geocalc.DMS.to_decimal(lat)
+    Geocalc.DMS.to_degrees(lat)
+  end
+
+  def latitude({lat = %Decimal{}, _lng}) do
+    Decimal.to_float(lat)
   end
 
   def latitude({lat, _lng}) when is_number(lat) do
@@ -90,7 +122,11 @@ defimpl Geocalc.Point, for: Tuple do
   end
 
   def latitude({:ok, lat = %Geocalc.DMS{}, _lng}) do
-    Geocalc.DMS.to_decimal(lat)
+    Geocalc.DMS.to_degrees(lat)
+  end
+
+  def latitude({:ok, lat = %Decimal{}, _lng}) do
+    Decimal.to_float(lat)
   end
 
   def latitude({:ok, lat, _lng}) when is_number(lat) do
@@ -98,7 +134,11 @@ defimpl Geocalc.Point, for: Tuple do
   end
 
   def longitude({_lat, lng = %Geocalc.DMS{}}) do
-    Geocalc.DMS.to_decimal(lng)
+    Geocalc.DMS.to_degrees(lng)
+  end
+
+  def longitude({_lat, lng = %Decimal{}}) do
+    Decimal.to_float(lng)
   end
 
   def longitude({_lat, lng}) when is_number(lng) do
@@ -106,7 +146,11 @@ defimpl Geocalc.Point, for: Tuple do
   end
 
   def longitude({:ok, _lat, lng = %Geocalc.DMS{}}) do
-    Geocalc.DMS.to_decimal(lng)
+    Geocalc.DMS.to_degrees(lng)
+  end
+
+  def longitude({:ok, _lat, lng = %Decimal{}}) do
+    Decimal.to_float(lng)
   end
 
   def longitude({:ok, _lat, lng}) when is_number(lng) do
@@ -116,7 +160,11 @@ end
 
 defimpl Geocalc.Point, for: Geocalc.Shape.Circle do
   def latitude(%Geocalc.Shape.Circle{latitude: lat = %Geocalc.DMS{}}) do
-    Geocalc.DMS.to_decimal(lat)
+    Geocalc.DMS.to_degrees(lat)
+  end
+
+  def latitude(%Geocalc.Shape.Circle{latitude: lat = %Decimal{}}) do
+    Decimal.to_float(lat)
   end
 
   def latitude(%Geocalc.Shape.Circle{latitude: lat}) when is_number(lat) do
@@ -124,7 +172,11 @@ defimpl Geocalc.Point, for: Geocalc.Shape.Circle do
   end
 
   def longitude(%Geocalc.Shape.Circle{longitude: lng = %Geocalc.DMS{}}) do
-    Geocalc.DMS.to_decimal(lng)
+    Geocalc.DMS.to_degrees(lng)
+  end
+
+  def longitude(%Geocalc.Shape.Circle{longitude: lng = %Decimal{}}) do
+    Decimal.to_float(lng)
   end
 
   def longitude(%Geocalc.Shape.Circle{longitude: lng}) when is_number(lng) do
@@ -134,7 +186,11 @@ end
 
 defimpl Geocalc.Point, for: Geocalc.Shape.Rectangle do
   def latitude(%Geocalc.Shape.Rectangle{latitude: lat = %Geocalc.DMS{}}) do
-    Geocalc.DMS.to_decimal(lat)
+    Geocalc.DMS.to_degrees(lat)
+  end
+
+  def latitude(%Geocalc.Shape.Rectangle{latitude: lat = %Decimal{}}) do
+    Decimal.to_float(lat)
   end
 
   def latitude(%Geocalc.Shape.Rectangle{latitude: lat}) when is_number(lat) do
@@ -142,7 +198,11 @@ defimpl Geocalc.Point, for: Geocalc.Shape.Rectangle do
   end
 
   def longitude(%Geocalc.Shape.Rectangle{longitude: lng = %Geocalc.DMS{}}) do
-    Geocalc.DMS.to_decimal(lng)
+    Geocalc.DMS.to_degrees(lng)
+  end
+
+  def longitude(%Geocalc.Shape.Rectangle{longitude: lng = %Decimal{}}) do
+    Decimal.to_float(lng)
   end
 
   def longitude(%Geocalc.Shape.Rectangle{longitude: lng}) when is_number(lng) do
@@ -152,7 +212,11 @@ end
 
 defimpl Geocalc.Point, for: Geocalc.Shape.Ellipse do
   def latitude(%Geocalc.Shape.Ellipse{latitude: lat = %Geocalc.DMS{}}) do
-    Geocalc.DMS.to_decimal(lat)
+    Geocalc.DMS.to_degrees(lat)
+  end
+
+  def latitude(%Geocalc.Shape.Ellipse{latitude: lat = %Decimal{}}) do
+    Decimal.to_float(lat)
   end
 
   def latitude(%Geocalc.Shape.Ellipse{latitude: lat}) when is_number(lat) do
@@ -160,7 +224,11 @@ defimpl Geocalc.Point, for: Geocalc.Shape.Ellipse do
   end
 
   def longitude(%Geocalc.Shape.Ellipse{longitude: lng = %Geocalc.DMS{}}) do
-    Geocalc.DMS.to_decimal(lng)
+    Geocalc.DMS.to_degrees(lng)
+  end
+
+  def longitude(%Geocalc.Shape.Ellipse{longitude: lng = %Decimal{}}) do
+    Decimal.to_float(lng)
   end
 
   def longitude(%Geocalc.Shape.Ellipse{longitude: lng}) when is_number(lng) do

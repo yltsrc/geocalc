@@ -10,6 +10,12 @@ defmodule GeocalcTest do
     assert_in_delta Geocalc.distance_between(point_1, point_2), 968_853.5, 0.05
   end
 
+  test "calculates distance between two decimal points" do
+    point_1 = [Decimal.new("50.0663889"), Decimal.new("-5.7147222")]
+    point_2 = [Decimal.new("58.6438889"), Decimal.new("-3.07")]
+    assert_in_delta Geocalc.distance_between(point_1, point_2), 968_853.5, 0.05
+  end
+
   test "returns true when point is within a given radius from the circle center" do
     center = [18.2208, 66.5901]
     point = [18.4655, 66.1057]
@@ -41,7 +47,7 @@ defmodule GeocalcTest do
 
   test "calculates distance between Minsk and London" do
     minsk = %{lat: 53.8838884, lon: 27.5949741}
-    london = %{lat: 51.5286416, lon: -0.1015987}
+    london = %{lat: Decimal.new("51.5286416"), lon: Decimal.new("-0.1015987")}
     assert_in_delta Geocalc.distance_between(minsk, london), 1_872_028.5, 0.05
   end
 
@@ -53,7 +59,7 @@ defmodule GeocalcTest do
 
   test "calculates bearing between Minsk and London" do
     minsk = %{latitude: 53.8838884, longitude: 27.5949741}
-    london = %{latitude: 51.5286416, longitude: -0.1015987}
+    london = %{latitude: Decimal.new("51.5286416"), longitude: Decimal.new("-0.1015987")}
     assert_in_delta Geocalc.bearing(minsk, london), -1.513836, 0.000001
   end
 
@@ -88,7 +94,7 @@ defmodule GeocalcTest do
 
   test "returns destination point in pacific ocean near Hawaii" do
     point_1 = {46.118942, 150.402832}
-    point_2 = {21.913108, -160.193712}
+    point_2 = {Decimal.new("21.913108"), Decimal.new("-160.193712")}
     distance = 4_178_348
     {:ok, point_3} = Geocalc.destination_point(point_1, point_2, distance)
 
@@ -282,7 +288,7 @@ defmodule GeocalcTest do
     latitude = 45.0
 
     assert Geocalc.crossing_parallels(point_1, point_2, latitude) ==
-             {:ok, 106.52361930066911, 155.95500236778844}
+             {:ok, 106.52361930066911, 155.95500236778838}
   end
 
   test "returns error message if no crossing parallels found" do

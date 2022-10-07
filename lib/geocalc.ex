@@ -14,7 +14,7 @@ defmodule Geocalc do
 
   ## Examples
 
-      iex> berlin = [52.5075419, 13.4251364]
+      iex> berlin = [Decimal.new("52.5075419"), Decimal.new("13.4251364")]
       iex> paris = [48.8588589, 2.3475569]
       iex> Geocalc.distance_between(berlin, paris)
       878327.4291149472
@@ -22,7 +22,7 @@ defmodule Geocalc do
       878327.4291149472
 
       iex> berlin = %{lat: 52.5075419, lon: 13.4251364}
-      iex> london = %{lat: 51.5286416, lng: -0.1015987}
+      iex> london = %{lat: Decimal.new("51.5286416"), lng: Decimal.new("-0.1015987")}
       iex> paris = %{latitude: 48.8588589, longitude: 2.3475569}
       iex> Geocalc.distance_between(berlin, paris)
       878327.4291149472

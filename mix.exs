@@ -9,13 +9,11 @@ defmodule Geocalc.Mixfile do
       app: :geocalc,
       name: "Geocalc",
       version: @version,
-      elixir: "~> 1.0",
+      elixir: "~> 1.9",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: Coverex.Task],
-      dialyzer: [
-        plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
-      ],
+      dialyzer: dialyzer(),
       package: package(),
       deps: deps(),
       docs: docs()
@@ -23,7 +21,9 @@ defmodule Geocalc.Mixfile do
   end
 
   def application do
-    [applications: [:logger]]
+    [
+      extra_applications: [:logger]
+    ]
   end
 
   defp deps do
@@ -31,9 +31,16 @@ defmodule Geocalc.Mixfile do
       {:benchfella, "~> 0.3.5", only: :bench},
       {:coverex, "~> 1.5.0", only: :test},
       {:credo, "~> 1.6.0", only: [:dev, :test]},
+      {:decimal, "~> 2.0"},
       {:dialyxir, "~> 1.2", only: [:dev, :test], runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:mix_test_watch, "~> 1.1.0", only: :dev}
+    ]
+  end
+
+  defp dialyzer() do
+    [
+      plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
     ]
   end
 

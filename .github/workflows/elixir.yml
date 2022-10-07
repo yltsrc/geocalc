@@ -73,7 +73,7 @@ jobs:
             deps
             _build
             priv/plts
-          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-${{ hashFiles('mix.lock') }}
+          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-${{ hashFiles('mix.exs') }}${{ hashFiles('mix.lock') }}
 
       - name: Install Dependencies
         if: steps.mix-cache.outputs.cache-hit != 'true'
@@ -127,7 +127,7 @@ jobs:
         run: mix credo
 
       - name: Run Dialyzer
-        run: mix dialyzer --no-check --halt-exit-status
+        run: mix dialyzer
 
   unit_tests:
     name: Unit Tests
