@@ -28,6 +28,7 @@ geocalc-*.tar
 
 # Misc.
 .idea
+*.iml
 /bench/snapshots
 /priv/plts/*.plt
 /priv/plts/*.plt.hash

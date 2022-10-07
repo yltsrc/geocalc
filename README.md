@@ -221,7 +221,7 @@ to do calculations are `latitude` and `longitude`.
 
 ```elixir
 dms = %Geocalc.DMS{hours: 13, minutes: 31, seconds: 59.998, direction: "N"}
-Geocalc.DMS.to_decimal(dms)
+Geocalc.DMS.to_degrees(dms)
 # => 13.533332777777778
 ```
 

@@ -166,12 +166,20 @@ defmodule Geocalc.Calculator do
     end
   end
 
-  def rem_float(float_1, float_2) when float_1 < 0 do
-    float_1 - Float.ceil(float_1 / float_2) * float_2
+  def rem_float(float_1, float_2) when is_float(float_1) and is_float(float_2) do
+    rem_float(Decimal.from_float(float_1), Decimal.from_float(float_2))
   end
 
-  def rem_float(float_1, float_2) do
-    float_1 - Float.floor(float_1 / float_2) * float_2
+  def rem_float(float_1, decimal_2) when is_float(float_1) do
+    rem_float(Decimal.from_float(float_1), decimal_2)
+  end
+
+  def rem_float(decimal_1, float_2) when is_float(float_2) do
+    rem_float(decimal_1, Decimal.from_float(float_2))
+  end
+
+  def rem_float(decimal_1, decimal_2) do
+    Decimal.to_float(Decimal.rem(decimal_1, decimal_2))
   end
 
   def degrees_to_radians(degrees) do

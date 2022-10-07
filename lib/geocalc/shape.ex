@@ -15,14 +15,14 @@ defmodule Geocalc.Shape do
     `Circle` describes a circular geographical area, centered on `latitude`,
     `longitude`, with a `radius` in meters.
 
-    `latitude` and `longitude` could be decimal degrees or `Geocalc.DMS`.
+    `latitude` and `longitude` could be `Decimal` degrees or `Geocalc.DMS`.
     """
     @enforce_keys [:latitude, :longitude, :radius]
     defstruct [:latitude, :longitude, :radius]
 
     @type t :: %__MODULE__{
-            latitude: number | Geocalc.DMS.t(),
-            longitude: number | Geocalc.DMS.t(),
+            latitude: number | Decimal.t() | Geocalc.DMS.t(),
+            longitude: number | Decimal.t() | Geocalc.DMS.t(),
             radius: number
           }
   end
@@ -30,7 +30,7 @@ defmodule Geocalc.Shape do
   defmodule Rectangle do
     @moduledoc """
     `Rectangle` describes a rectangular geographical area, centered on
-    `latitude`, `longitude` (could be decimal degrees or `Geocalc.DMS`), with
+    `latitude`, `longitude` (could be `Decimal` degrees or `Geocalc.DMS`), with
     `long_semi_axis` and `short_semi_axis` (both in meters) and an azimuth
     `angle` (in degrees).
 
@@ -47,8 +47,8 @@ defmodule Geocalc.Shape do
     defstruct [:latitude, :longitude, :long_semi_axis, :short_semi_axis, :angle]
 
     @type t :: %__MODULE__{
-            latitude: number | Geocalc.DMS.t(),
-            longitude: number | Geocalc.DMS.t(),
+            latitude: number | Decimal.t() | Geocalc.DMS.t(),
+            longitude: number | Decimal.t() | Geocalc.DMS.t(),
             long_semi_axis: number,
             short_semi_axis: number,
             angle: number
@@ -58,7 +58,7 @@ defmodule Geocalc.Shape do
   defmodule Ellipse do
     @moduledoc """
     `Ellipse` describes an elliptic geographical area, centered on `latitude`,
-    `longitude` (could be decimal degrees or `Geocalc.DMS`), with
+    `longitude` (could be `Decimal` degrees or `Geocalc.DMS`), with
     `long_semi_axis` and `short_semi_axis` (both in meters) and an azimuth
     `angle` (in degrees).
 
@@ -74,8 +74,8 @@ defmodule Geocalc.Shape do
     defstruct [:latitude, :longitude, :long_semi_axis, :short_semi_axis, :angle]
 
     @type t :: %__MODULE__{
-            latitude: number | Geocalc.DMS.t(),
-            longitude: number | Geocalc.DMS.t(),
+            latitude: number | Decimal.t() | Geocalc.DMS.t(),
+            longitude: number | Decimal.t() | Geocalc.DMS.t(),
             long_semi_axis: number,
             short_semi_axis: number,
             angle: number
