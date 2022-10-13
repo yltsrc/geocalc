@@ -292,11 +292,15 @@ defmodule Geocalc.Calculator do
         lon = point |> Point.longitude() |> degrees_to_radians()
 
         {
-          x + :math.cos(lat) * :math.cos(lon) / len,
-          y + :math.cos(lat) * :math.sin(lon) / len,
-          z + :math.sin(lat) / len
+          x + :math.cos(lat) * :math.cos(lon),
+          y + :math.cos(lat) * :math.sin(lon),
+          z + :math.sin(lat)
         }
       end)
+
+    xa = xa / len
+    ya = ya / len
+    za = za / len
 
     lon = :math.atan2(ya, xa)
     hyp = :math.sqrt(xa * xa + ya * ya)
