@@ -55,4 +55,8 @@ defmodule GeocalcBench do
   bench "bounding box for points" do
     Geocalc.bounding_box_for_points(@poly)
   end
+
+  bench "geographic center" do
+    Geocalc.geographic_center([@london, @berlin, @paris])
+  end
 end

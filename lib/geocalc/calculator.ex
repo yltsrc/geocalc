@@ -284,18 +284,19 @@ defmodule Geocalc.Calculator do
   end
 
   def geographic_center(points) do
-    [xa, ya, za] =
-      points
-      |> Enum.map(fn point ->
-        [degrees_to_radians(Point.latitude(point)), degrees_to_radians(Point.longitude(point))]
+    len = length(points)
+
+    {xa, ya, za} =
+      Enum.reduce(points, {0, 0, 0}, fn point, {x, y, z} ->
+        lat = point |> Point.latitude() |> degrees_to_radians()
+        lon = point |> Point.longitude() |> degrees_to_radians()
+
+        {
+          x + :math.cos(lat) * :math.cos(lon) / len,
+          y + :math.cos(lat) * :math.sin(lon) / len,
+          z + :math.sin(lat) / len
+        }
       end)
-      |> Enum.reduce([[], [], []], fn point, [x, y, z] ->
-        x = [:math.cos(Point.latitude(point)) * :math.cos(Point.longitude(point)) | x]
-        y = [:math.cos(Point.latitude(point)) * :math.sin(Point.longitude(point)) | y]
-        z = [:math.sin(Point.latitude(point)) | z]
-        [x, y, z]
-      end)
-      |> Enum.map(fn list -> Enum.sum(list) / length(list) end)
 
     lon = :math.atan2(ya, xa)
     hyp = :math.sqrt(xa * xa + ya * ya)
