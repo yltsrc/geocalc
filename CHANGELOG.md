@@ -5,9 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## next release
+## v0.8.5 - 2022-10-14
 
-* Drop support for elixir 1.6 and otp 19
+* Add support for elixir 1.12, 1.13, 1.14 and otp 24, 25
+* Drop support for elixir 1.6, 1.7, 1.8 and otp 19
+* Faster geographic center calculation
+* Accept Decimal as Geocalc.Point
+* Mark Geocalc.DMS.to_decimal/1 as deprecated
 
 ## v0.8.4 - 2021-03-31
 
